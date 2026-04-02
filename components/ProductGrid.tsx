@@ -2,7 +2,7 @@
 import { useState, useMemo } from 'react'
 import { ProductCard } from './ProductCard'
 
-interface Product { id: string; name: string; imageUrl: string; price: number; category: string; affiliateUrl: string; clickCount: number; createdAt: string }
+interface Product { id: string; name: string; imageUrl: string; price: number; category: string; affiliateUrl: string; clickCount: number; createdAt: Date | string }
 
 export function ProductGrid({ products }: { products: Product[] }) {
   const [search, setSearch] = useState('')
