@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { waitUntil } from '@vercel/functions'
 import { prisma } from '@/lib/prisma'
 
 export async function GET(
@@ -10,19 +11,19 @@ export async function GET(
 
     const product = await prisma.product.findUnique({
       where: { id },
+      select: { affiliateUrl: true },
     })
 
     if (!product) {
       return NextResponse.redirect(new URL('/', request.url))
     }
 
-    // tăng click count (không block redirect)
-    await prisma.product.update({
-      where: { id },
-      data: {
-        clickCount: { increment: 1 },
-      },
-    })
+    waitUntil(
+      prisma.product.update({
+        where: { id },
+        data: { clickCount: { increment: 1 } },
+      })
+    )
 
     return NextResponse.redirect(product.affiliateUrl, { status: 302 })
   } catch (error) {
