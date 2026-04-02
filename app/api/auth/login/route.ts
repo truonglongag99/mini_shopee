@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
   }
 
-  const signed = signValue('authenticated')
+  const signed = await signValue('authenticated')
   const response = NextResponse.json({ ok: true })
   response.cookies.set('admin_session', signed, {
     httpOnly: true,

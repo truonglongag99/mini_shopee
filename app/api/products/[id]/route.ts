@@ -30,7 +30,7 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!isValidSession(request.headers.get('cookie'))) {
+    if (!(await isValidSession(request.headers.get('cookie')))) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -66,7 +66,7 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!isValidSession(request.headers.get('cookie'))) {
+    if (!(await isValidSession(request.headers.get('cookie')))) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

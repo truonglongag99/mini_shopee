@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { isValidSession } from '@/lib/auth'
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (pathname === '/admin/login') {
@@ -9,7 +9,7 @@ export function middleware(request: NextRequest) {
   }
 
   const cookieHeader = request.headers.get('cookie')
-  if (!isValidSession(cookieHeader)) {
+  if (!(await isValidSession(cookieHeader))) {
     return NextResponse.redirect(new URL('/admin/login', request.url))
   }
 

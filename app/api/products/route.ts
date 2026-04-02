@@ -8,7 +8,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  if (!isValidSession(request.headers.get('cookie')))
+  if (!(await isValidSession(request.headers.get('cookie'))))
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const body = await request.json().catch(() => ({}))
   const { name, imageUrl, price, affiliateUrl, category } = body
