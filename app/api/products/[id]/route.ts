@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { isValidSession } from '@/lib/auth'
 
+export const dynamic = 'force-dynamic'
+
 // GET: lấy 1 product theo id
 export async function GET(
   request: NextRequest,
