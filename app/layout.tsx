@@ -14,7 +14,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Mini Shopee",
+  title: "Ada Shop",
   description: "Tổng hợp sản phẩm affiliate",
 };
 
