@@ -25,7 +25,7 @@ export function ProductForm({ initialData, productId }: { initialData?: FormData
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...form, price: parseFloat(form.price) }),
     })
-    if (res.ok) { router.push('/admin'); router.refresh() }
+    if (res.ok) { router.push('/admin') }
     else { const d = await res.json().catch(() => ({})); setError(d.error ?? 'Có lỗi xảy ra'); setLoading(false) }
   }
 

@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { ProductTable } from '@/components/admin/ProductTable'
 import { LogoutButton } from '@/components/admin/LogoutButton'
 
-export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 export default async function AdminPage() {
   const products = await prisma.product.findMany({ orderBy: { createdAt: 'desc' } })
