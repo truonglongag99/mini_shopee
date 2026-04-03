@@ -18,7 +18,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
         </div>
       </header>
       <div className="max-w-2xl mx-auto px-6 py-8">
-        <ProductForm initialData={{ name: product.name, imageUrl: product.imageUrl, price: product.price.toString(), affiliateUrl: product.affiliateUrl, category: product.category }} productId={id} />
+        <ProductForm initialData={{ name: product.name, imageUrl: product.imageUrl, price: product.price.toString(), affiliateUrl: product.affiliateUrl, category: product.category, description: product.description ?? '', isVisible: product.isVisible }} productId={id} />
       </div>
     </div>
   )

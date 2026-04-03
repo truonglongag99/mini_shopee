@@ -2,9 +2,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-interface FormData { name: string; imageUrl: string; price: string; affiliateUrl: string; category: string }
-const EMPTY: FormData = { name: '', imageUrl: '', price: '', affiliateUrl: '', category: '' }
-const FIELDS: Array<{name: keyof FormData; label: string; type: string; placeholder: string}> = [
+interface FormData { name: string; imageUrl: string; price: string; affiliateUrl: string; category: string; description: string; isVisible: boolean }
+const EMPTY: FormData = { name: '', imageUrl: '', price: '', affiliateUrl: '', category: '', description: '', isVisible: true }
+const FIELDS: Array<{name: keyof Omit<FormData, 'description' | 'isVisible'>; label: string; type: string; placeholder: string}> = [
   { name: 'name', label: 'Tên sản phẩm', type: 'text', placeholder: 'iPhone 15 Pro Max' },
   { name: 'imageUrl', label: 'URL hình ảnh', type: 'url', placeholder: 'https://example.com/image.jpg' },
   { name: 'price', label: 'Giá (VND)', type: 'number', placeholder: '29990000' },
@@ -34,14 +34,24 @@ export function ProductForm({ initialData, productId }: { initialData?: FormData
       {FIELDS.map(f => (
         <div key={f.name}>
           <label htmlFor={f.name} className="block text-sm font-medium text-gray-700 mb-1">{f.label}</label>
-          <input id={f.name} type={f.type} name={f.name} value={form[f.name]} onChange={e => setForm(p => ({...p, [e.target.name]: e.target.value}))} placeholder={f.placeholder} required min={f.type==='number'?'0':undefined} step={f.type==='number'?'any':undefined} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400 text-sm" />
+          <input id={f.name} type={f.type} name={f.name} value={form[f.name] as string} onChange={e => setForm(p => ({...p, [e.target.name]: e.target.value}))} placeholder={f.placeholder} required min={f.type==='number'?'0':undefined} step={f.type==='number'?'any':undefined} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400 text-sm" />
         </div>
       ))}
+      <div>
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Mô tả sản phẩm</label>
+        <textarea id="description" name="description" value={form.description} onChange={e => setForm(p => ({...p, description: e.target.value}))} placeholder="Mô tả công dụng, tính năng nổi bật, đối tượng phù hợp..." rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400 text-sm resize-none" />
+      </div>
       {form.imageUrl && (
         <div><p className="text-xs text-gray-500 mb-1">Preview:</p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={form.imageUrl} alt="preview" className="w-24 h-24 object-cover rounded border" onError={e => {(e.target as HTMLImageElement).style.display='none'}} /></div>
       )}
+      <div className="flex items-center gap-3">
+        <button type="button" onClick={() => setForm(p => ({...p, isVisible: !p.isVisible}))} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${form.isVisible ? 'bg-orange-500' : 'bg-gray-300'}`}>
+          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${form.isVisible ? 'translate-x-6' : 'translate-x-1'}`} />
+        </button>
+        <span className="text-sm text-gray-700">{form.isVisible ? 'Hiển thị' : 'Ẩn'}</span>
+      </div>
       {error && <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded">{error}</p>}
       <div className="flex gap-3 pt-2">
         <button type="submit" disabled={loading} className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 disabled:opacity-50 text-sm font-medium">{loading ? 'Đang lưu...' : productId ? 'Cập nhật' : 'Tạo sản phẩm'}</button>

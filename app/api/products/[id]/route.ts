@@ -39,7 +39,7 @@ export async function PUT(
     const { id } = await context.params
     const body = await request.json().catch(() => ({}))
 
-    const { name, imageUrl, price, affiliateUrl, category } = body
+    const { name, imageUrl, price, affiliateUrl, category, description, isVisible } = body
 
     if (!name || !imageUrl || price === undefined || !affiliateUrl || !category) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -53,6 +53,8 @@ export async function PUT(
         price: parseFloat(String(price)),
         affiliateUrl: String(affiliateUrl),
         category: String(category),
+        description: description ? String(description) : null,
+        isVisible: isVisible !== undefined ? Boolean(isVisible) : true,
       },
     })
 

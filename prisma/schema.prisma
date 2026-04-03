@@ -11,10 +11,12 @@ datasource db {
 model Product {
   id           String   @id @default(cuid())
   name         String
+  description  String?
   imageUrl     String
   price        Float
   affiliateUrl String
   category     String
+  isVisible    Boolean  @default(true)
   clickCount   Int      @default(0)
   createdAt    DateTime @default(now())
 }
