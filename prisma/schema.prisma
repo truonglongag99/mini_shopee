@@ -34,5 +34,6 @@ model Script {
   status      String   @default("draft")
   videoStatus String   @default("none")
   videoUrl    String?
+  taskId      String?
   createdAt   DateTime @default(now())
 }

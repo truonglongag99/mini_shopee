@@ -35,10 +35,7 @@ export async function POST(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await context.params
-  const script = await prisma.script.findUnique({
-    where: { id },
-    include: { product: { select: { imageUrl: true } } },
-  })
+  const script = await prisma.script.findUnique({ where: { id } })
 
   if (!script)
     return NextResponse.json({ error: 'Script not found' }, { status: 404 })
@@ -51,12 +48,6 @@ export async function POST(
 
   const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/fal?scriptId=${id}`
 
-  // Kling không hỗ trợ webp — convert sang jpg nếu cần
-  const rawImageUrl = script.product.imageUrl
-  const imageUrl = rawImageUrl.endsWith('.webp')
-    ? rawImageUrl.replace('.webp', '.jpg')
-    : rawImageUrl
-
   const res = await fetch('https://api.piapi.ai/api/v1/task', {
     method: 'POST',
     headers: {
@@ -68,8 +59,7 @@ export async function POST(
       task_type: 'video_generation',
       input: {
         prompt: buildPrompt(script),
-        image_url: imageUrl,
-        duration: 5,
+        duration: 10,
         aspect_ratio: '9:16',
         mode: 'std',
         version: '1.6',
