@@ -63,7 +63,8 @@ Trả về JSON theo đúng format sau, không thêm bất kỳ text nào ngoài
     raw = message.choices[0].message.content ?? ''
   }
 
-  const parsed = JSON.parse(raw)
+  const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '').trim()
+  const parsed = JSON.parse(cleaned)
 
   const script = await prisma.script.create({
     data: {
