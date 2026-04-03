@@ -51,6 +51,12 @@ export async function POST(
 
   const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/fal?scriptId=${id}`
 
+  // Kling không hỗ trợ webp — convert sang jpg nếu cần
+  const rawImageUrl = script.product.imageUrl
+  const imageUrl = rawImageUrl.endsWith('.webp')
+    ? rawImageUrl.replace('.webp', '.jpg')
+    : rawImageUrl
+
   const res = await fetch('https://api.piapi.ai/api/v1/task', {
     method: 'POST',
     headers: {
@@ -62,7 +68,7 @@ export async function POST(
       task_type: 'video_generation',
       input: {
         prompt: buildPrompt(script),
-        image_url: script.product.imageUrl,
+        image_url: imageUrl,
         duration: 5,
         aspect_ratio: '9:16',
         mode: 'std',
