@@ -38,7 +38,10 @@ export async function POST(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await context.params
-  const script = await prisma.script.findUnique({ where: { id } })
+  const script = await prisma.script.findUnique({
+    where: { id },
+    include: { product: { select: { imageUrl: true } } },
+  })
 
   if (!script)
     return NextResponse.json({ error: 'Script not found' }, { status: 404 })
@@ -50,10 +53,12 @@ export async function POST(
   await prisma.script.update({ where: { id }, data: { videoStatus: 'pending' } })
 
   const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/fal?scriptId=${id}`
+  const imageUrl = script.product.imageUrl
 
-  await fal.queue.submit('fal-ai/kling-video/v1.6/standard/text-to-video', {
+  await fal.queue.submit('fal-ai/kling-video/v1.6/standard/image-to-video', {
     input: {
       prompt: buildPrompt(script),
+      image_url: imageUrl,
       duration: '5',
       aspect_ratio: '9:16',
     },

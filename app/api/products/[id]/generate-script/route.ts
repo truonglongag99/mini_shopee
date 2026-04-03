@@ -29,13 +29,17 @@ Thông tin sản phẩm:
 - Giá: ${product.price.toLocaleString('vi-VN')}đ
 - Mô tả: ${product.description ?? 'Không có mô tả'}
 
-Hãy viết kịch bản drama tự nhiên khoảng 30 giây, 2 nhân vật đang nói chuyện với nhau. Nhân vật, ngôn ngữ và tình huống phải phù hợp với mô tả sản phẩm.
+Hãy viết kịch bản video ngắn khoảng 10 giây, phù hợp với mô tả sản phẩm. Lưu ý:
+- Số nhân vật: 1 hoặc 2 tùy theo mô tả sản phẩm phù hợp
+- Nhân vật có thể là người, động vật, hoặc thú cưng đang "tự kể" về sản phẩm
+- Nếu là động vật: viết như thể chúng đang nói chuyện tự nhiên về trải nghiệm dùng sản phẩm
+- Ngôn ngữ, giọng điệu phù hợp với đối tượng trong mô tả
 
 Trả về JSON theo đúng format sau, không thêm bất kỳ text nào ngoài JSON:
 {
   "title": "tiêu đề kịch bản",
   "setting": "mô tả bối cảnh cảnh quay",
-  "characters": ["tên nhân vật 1", "tên nhân vật 2"],
+  "characters": ["tên/loài nhân vật 1"],
   "scenes": [
     {
       "character": "tên nhân vật",
