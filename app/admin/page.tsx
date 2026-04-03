@@ -6,7 +6,10 @@ import { LogoutButton } from '@/components/admin/LogoutButton'
 export const dynamic = 'force-dynamic'
 
 export default async function AdminPage() {
-  const products = await prisma.product.findMany({ orderBy: { createdAt: 'desc' } })
+  const products = await prisma.product.findMany({
+    orderBy: { createdAt: 'desc' },
+    include: { _count: { select: { scripts: true } } },
+  })
   const serialized = JSON.parse(JSON.stringify(products))
   return (
     <div className="min-h-screen bg-gray-50">

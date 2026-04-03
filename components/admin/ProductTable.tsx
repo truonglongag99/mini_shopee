@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-interface Product { id: string; name: string; category: string; price: number; clickCount: number; imageUrl: string }
+interface Product { id: string; name: string; category: string; price: number; clickCount: number; imageUrl: string; _count: { scripts: number } }
 
 export function ProductTable({ products }: { products: Product[] }) {
   const router = useRouter()
@@ -45,13 +45,16 @@ export function ProductTable({ products }: { products: Product[] }) {
                 <div className="flex items-center gap-2 mt-1">
                   <span className="bg-orange-100 text-orange-600 text-xs px-2 py-0.5 rounded-full">{product.category}</span>
                   <span className="text-xs text-gray-500">{product.clickCount} clicks</span>
+                  {product._count.scripts > 0 && (
+                    <span className="bg-purple-100 text-purple-600 text-xs px-2 py-0.5 rounded-full">{product._count.scripts} kịch bản</span>
+                  )}
                 </div>
               </div>
               <p className="text-sm font-medium text-gray-700 shrink-0">₫{product.price.toLocaleString('vi-VN')}</p>
             </div>
             <div className="flex gap-2 border-t pt-3">
               <button onClick={() => handleGenerate(product.id)} disabled={generating === product.id} className="flex-1 text-center text-xs text-orange-500 font-medium py-1.5 rounded-lg border border-orange-200 hover:bg-orange-50 disabled:opacity-50">
-                {generating === product.id ? 'Đang tạo...' : 'Tạo kịch bản'}
+                {generating === product.id ? 'Đang tạo...' : product._count.scripts > 0 ? 'Tạo thêm kịch bản' : 'Tạo kịch bản'}
               </button>
               <Link href={`/admin/products/${product.id}/edit`} className="flex-1 text-center text-xs text-blue-500 font-medium py-1.5 rounded-lg border border-blue-200 hover:bg-blue-50">Sửa</Link>
               <button onClick={() => handleDelete(product.id, product.name)} className="flex-1 text-center text-xs text-red-500 font-medium py-1.5 rounded-lg border border-red-200 hover:bg-red-50">Xóa</button>
@@ -77,7 +80,12 @@ export function ProductTable({ products }: { products: Product[] }) {
                   <div className="flex items-center gap-3">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={product.imageUrl} alt={product.name} className="w-10 h-10 object-cover rounded bg-gray-100" />
-                    <span className="text-sm font-medium text-gray-800 line-clamp-1 max-w-[200px]">{product.name}</span>
+                    <div>
+                      <span className="text-sm font-medium text-gray-800 line-clamp-1 max-w-[200px]">{product.name}</span>
+                      {product._count.scripts > 0 && (
+                        <span className="block text-xs text-purple-500 mt-0.5">{product._count.scripts} kịch bản</span>
+                      )}
+                    </div>
                   </div>
                 </td>
                 <td className="px-4 py-3"><span className="inline-block bg-orange-100 text-orange-600 text-xs px-2 py-1 rounded-full">{product.category}</span></td>
@@ -85,7 +93,7 @@ export function ProductTable({ products }: { products: Product[] }) {
                 <td className="px-4 py-3 text-sm text-gray-700">{product.clickCount}</td>
                 <td className="px-4 py-3">
                   <div className="flex justify-end gap-3">
-                    <button onClick={() => handleGenerate(product.id)} disabled={generating === product.id} className="text-sm text-orange-500 hover:text-orange-700 font-medium disabled:opacity-50">{generating === product.id ? 'Đang tạo...' : 'Tạo kịch bản'}</button>
+                    <button onClick={() => handleGenerate(product.id)} disabled={generating === product.id} className="text-sm text-orange-500 hover:text-orange-700 font-medium disabled:opacity-50">{generating === product.id ? 'Đang tạo...' : product._count.scripts > 0 ? 'Tạo thêm' : 'Tạo kịch bản'}</button>
                     <Link href={`/admin/products/${product.id}/edit`} className="text-sm text-blue-500 hover:text-blue-700 font-medium">Sửa</Link>
                     <button onClick={() => handleDelete(product.id, product.name)} className="text-sm text-red-500 hover:text-red-700 font-medium">Xóa</button>
                   </div>
