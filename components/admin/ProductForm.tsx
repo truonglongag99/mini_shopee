@@ -30,7 +30,7 @@ export function ProductForm({ initialData, productId }: { initialData?: FormData
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5 max-w-lg">
+    <form onSubmit={handleSubmit} className="space-y-5 w-full">
       {FIELDS.map(f => (
         <div key={f.name}>
           <label htmlFor={f.name} className="block text-sm font-medium text-gray-700 mb-1">{f.label}</label>

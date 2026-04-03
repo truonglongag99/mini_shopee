@@ -19,4 +19,18 @@ model Product {
   isVisible    Boolean  @default(true)
   clickCount   Int      @default(0)
   createdAt    DateTime @default(now())
+  scripts      Script[]
+}
+
+model Script {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  title       String
+  setting     String
+  characters  Json
+  scenes      Json
+  cta         String
+  status      String   @default("draft")
+  createdAt   DateTime @default(now())
 }

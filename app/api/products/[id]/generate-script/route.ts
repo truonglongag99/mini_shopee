@@ -51,7 +51,19 @@ Trả về JSON theo đúng format sau, không thêm bất kỳ text nào ngoài
   })
 
   const raw = message.content[0].type === 'text' ? message.content[0].text : ''
+  const parsed = JSON.parse(raw)
 
-  const script = JSON.parse(raw)
-  return NextResponse.json(script)
+  const script = await prisma.script.create({
+    data: {
+      productId: id,
+      title: parsed.title,
+      setting: parsed.setting,
+      characters: parsed.characters,
+      scenes: parsed.scenes,
+      cta: parsed.cta,
+      status: 'draft',
+    },
+  })
+
+  return NextResponse.json(script, { status: 201 })
 }
