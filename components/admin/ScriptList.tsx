@@ -11,6 +11,8 @@ interface Script {
   scenes: Scene[]
   cta: string
   status: string
+  videoStatus: string
+  videoUrl: string | null
   createdAt: string
   product: { name: string; imageUrl: string; category: string }
 }
@@ -25,6 +27,7 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
   const router = useRouter()
   const [expanded, setExpanded] = useState<string | null>(null)
   const [loading, setLoading] = useState<string | null>(null)
+  const [generatingVideo, setGeneratingVideo] = useState<string | null>(null)
 
   async function updateStatus(id: string, status: string) {
     setLoading(id)
@@ -35,6 +38,14 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
     })
     router.refresh()
     setLoading(null)
+  }
+
+  async function handleGenerateVideo(id: string) {
+    setGeneratingVideo(id)
+    const res = await fetch(`/api/scripts/${id}/generate-video`, { method: 'POST' })
+    if (!res.ok) alert('Tạo video thất bại. Thử lại!')
+    router.refresh()
+    setGeneratingVideo(null)
   }
 
   async function handleDelete(id: string) {
@@ -95,7 +106,14 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                 <p className="text-xs font-semibold text-gray-500 uppercase mb-1">CTA</p>
                 <p className="text-sm text-orange-600 font-medium">{s.cta}</p>
               </div>
-              <div className="flex gap-2 pt-1">
+              {s.videoUrl && (
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Video</p>
+                  <video src={s.videoUrl} controls className="w-full max-w-[220px] rounded-lg border" />
+                  <a href={s.videoUrl} download className="inline-block mt-1 text-xs text-blue-500 hover:underline">Tải xuống</a>
+                </div>
+              )}
+              <div className="flex flex-wrap gap-2 pt-1">
                 {s.status !== 'approved' && (
                   <button disabled={loading === s.id} onClick={() => updateStatus(s.id, 'approved')} className="bg-green-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-green-600 disabled:opacity-50">Duyệt</button>
                 )}
@@ -104,6 +122,11 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                 )}
                 {s.status !== 'draft' && (
                   <button disabled={loading === s.id} onClick={() => updateStatus(s.id, 'draft')} className="bg-yellow-100 text-yellow-700 text-xs px-3 py-1.5 rounded-lg hover:bg-yellow-200 disabled:opacity-50">Draft lại</button>
+                )}
+                {s.status === 'approved' && s.videoStatus !== 'completed' && (
+                  <button disabled={generatingVideo === s.id || s.videoStatus === 'pending'} onClick={() => handleGenerateVideo(s.id)} className="bg-purple-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-purple-600 disabled:opacity-50">
+                    {s.videoStatus === 'pending' || generatingVideo === s.id ? 'Đang tạo video...' : 'Tạo video'}
+                  </button>
                 )}
                 <button disabled={loading === s.id} onClick={() => handleDelete(s.id)} className="ml-auto text-red-500 text-xs px-3 py-1.5 rounded-lg hover:bg-red-50 disabled:opacity-50">Xóa</button>
               </div>
