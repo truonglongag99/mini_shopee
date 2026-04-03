@@ -69,7 +69,7 @@ export async function POST(
         version: '1.6',
       },
       webhook_config: {
-        webhook_url: webhookUrl,
+        endpoint: webhookUrl,
       },
     }),
   })
