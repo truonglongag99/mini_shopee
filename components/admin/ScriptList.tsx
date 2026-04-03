@@ -13,6 +13,11 @@ interface Script {
   status: string
   videoStatus: string
   videoUrl: string | null
+  imagePrompt: string | null
+  shortCaption: string | null
+  longCaption: string | null
+  hashtags: string[]
+  generatedImageUrl: string | null
   createdAt: string
   product: { name: string; imageUrl: string; category: string }
 }
@@ -45,7 +50,7 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
   const [editing, setEditing] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<EditForm | null>(null)
   const [loading, setLoading] = useState<string | null>(null)
-  const [generatingVideo, setGeneratingVideo] = useState<string | null>(null)
+  const [_generatingVideo, _setGeneratingVideo] = useState<string | null>(null)
 
   const scripts = filter === 'all' ? initial : initial.filter(s => s.status === filter)
 
@@ -99,11 +104,11 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
   }
 
   async function handleGenerateVideo(id: string) {
-    setGeneratingVideo(id)
+    _setGeneratingVideo(id)
     const res = await fetch(`/api/scripts/${id}/generate-video`, { method: 'POST' })
     if (!res.ok) alert('Tạo video thất bại. Thử lại!')
     router.refresh()
-    setGeneratingVideo(null)
+    _setGeneratingVideo(null)
   }
 
   async function handleDelete(id: string) {
@@ -212,11 +217,43 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                     <p className="text-xs font-semibold text-gray-500 uppercase mb-1">CTA</p>
                     <p className="text-sm text-orange-600 font-medium">{s.cta}</p>
                   </div>
-                  {s.videoUrl && (
+                  {(s.shortCaption || s.longCaption) && (
+                    <div className="space-y-3">
+                      {s.shortCaption && (
+                        <div>
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="text-xs font-semibold text-gray-500 uppercase">Caption ngắn (TikTok/Threads)</p>
+                            <button onClick={() => navigator.clipboard.writeText(s.shortCaption!)} className="text-xs text-blue-500 hover:underline">Copy</button>
+                          </div>
+                          <p className="text-sm text-gray-700 whitespace-pre-line bg-white border rounded-lg px-3 py-2">{s.shortCaption}</p>
+                        </div>
+                      )}
+                      {s.longCaption && (
+                        <div>
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="text-xs font-semibold text-gray-500 uppercase">Caption dài (Facebook/Instagram)</p>
+                            <button onClick={() => navigator.clipboard.writeText(s.longCaption!)} className="text-xs text-blue-500 hover:underline">Copy</button>
+                          </div>
+                          <p className="text-sm text-gray-700 whitespace-pre-line bg-white border rounded-lg px-3 py-2">{s.longCaption}</p>
+                        </div>
+                      )}
+                      {s.hashtags?.length > 0 && (
+                        <div>
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="text-xs font-semibold text-gray-500 uppercase">Hashtags</p>
+                            <button onClick={() => navigator.clipboard.writeText(s.hashtags.join(' '))} className="text-xs text-blue-500 hover:underline">Copy</button>
+                          </div>
+                          <p className="text-sm text-blue-500">{s.hashtags.join(' ')}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {s.generatedImageUrl && (
                     <div>
-                      <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Video</p>
-                      <video src={s.videoUrl} controls className="w-full max-w-[220px] rounded-lg border" />
-                      <a href={s.videoUrl} download className="inline-block mt-1 text-xs text-blue-500 hover:underline">Tải xuống</a>
+                      <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Ảnh generated</p>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={s.generatedImageUrl} alt="generated" className="w-full max-w-[200px] rounded-lg border" />
+                      <a href={s.generatedImageUrl} download className="inline-block mt-1 text-xs text-blue-500 hover:underline">Tải xuống</a>
                     </div>
                   )}
                   <div className="flex flex-wrap gap-2 pt-1">
@@ -230,11 +267,6 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                       <button disabled={loading === s.id} onClick={() => updateStatus(s.id, 'draft')} className="bg-yellow-100 text-yellow-700 text-xs px-3 py-1.5 rounded-lg hover:bg-yellow-200 disabled:opacity-50">Draft lại</button>
                     )}
                     <button onClick={() => startEdit(s)} className="bg-blue-50 text-blue-600 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-100">Chỉnh sửa</button>
-                    {s.status === 'approved' && s.videoStatus !== 'completed' && (
-                      <button disabled={generatingVideo === s.id || s.videoStatus === 'pending'} onClick={() => handleGenerateVideo(s.id)} className="bg-purple-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-purple-600 disabled:opacity-50">
-                        {s.videoStatus === 'pending' || generatingVideo === s.id ? 'Đang tạo video...' : 'Tạo video'}
-                      </button>
-                    )}
                     <button disabled={loading === s.id} onClick={() => handleDelete(s.id)} className="ml-auto text-red-500 text-xs px-3 py-1.5 rounded-lg hover:bg-red-50 disabled:opacity-50">Xóa</button>
                   </div>
                 </>

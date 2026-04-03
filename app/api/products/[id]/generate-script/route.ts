@@ -21,7 +21,7 @@ export async function POST(
   if (!product)
     return NextResponse.json({ error: 'Product not found' }, { status: 404 })
 
-  const prompt = `Bạn là chuyên gia viết kịch bản video ngắn TikTok cho affiliate marketing Shopee.
+  const prompt = `Bạn là chuyên gia tạo content affiliate marketing đa nền tảng (TikTok, Instagram, Facebook, Threads) theo phong cách: nhân vật tự kể chuyện + fact bất ngờ + hài hước nhẹ.
 
 Thông tin sản phẩm:
 - Tên: ${product.name}
@@ -29,25 +29,29 @@ Thông tin sản phẩm:
 - Giá: ${product.price.toLocaleString('vi-VN')}đ
 - Mô tả: ${product.description ?? 'Không có mô tả'}
 
-Hãy viết kịch bản video ngắn khoảng 10 giây, phù hợp với mô tả sản phẩm. Lưu ý:
-- Số nhân vật: 1 hoặc 2 tùy theo mô tả sản phẩm phù hợp
-- Nhân vật có thể là người, động vật, hoặc thú cưng đang "tự kể" về sản phẩm
-- Nếu là động vật: viết như thể chúng đang nói chuyện tự nhiên về trải nghiệm dùng sản phẩm
-- Ngôn ngữ, giọng điệu phù hợp với đối tượng trong mô tả
+Yêu cầu:
+- Nhân vật: 1 hoặc 2, có thể là người/thú cưng/động vật tự kể — chọn theo mô tả sản phẩm
+- Tone: có ích (fact thật) + hài hước nhẹ (cường điệu dễ thương, tự trào, twist bất ngờ)
+- Caption ngắn cho TikTok/Threads: hook mạnh, 3-5 dòng, emoji, "Link trong bio"
+- Caption dài cho Facebook/Instagram: kể chuyện đầy đủ hơn, có fact, có link affiliate
 
 Trả về JSON theo đúng format sau, không thêm bất kỳ text nào ngoài JSON:
 {
-  "title": "tiêu đề kịch bản",
-  "setting": "mô tả bối cảnh cảnh quay",
-  "characters": ["tên/loài nhân vật 1"],
+  "title": "tiêu đề nội dung",
+  "setting": "mô tả bối cảnh",
+  "characters": ["tên nhân vật"],
   "scenes": [
     {
       "character": "tên nhân vật",
       "line": "lời thoại",
-      "action": "hành động/biểu cảm ngắn"
+      "action": "hành động/biểu cảm"
     }
   ],
-  "cta": "câu kêu gọi mua hàng cuối video có giá và nhắc Shopee"
+  "cta": "câu kêu gọi mua có giá và nhắc Shopee",
+  "imagePrompt": "Detailed English prompt for AI image generation — describe scene, characters, lighting, style, mood. Photorealistic, vibrant, social media ready.",
+  "shortCaption": "Caption TikTok/Threads: nhân vật xưng tao/tôi tự kể, có fact bất ngờ, hài hước, 3-5 dòng, emoji phù hợp, kết bằng 'Link trong bio 🔗'",
+  "longCaption": "Caption Facebook/Instagram: nhân vật tự giới thiệu, kể chuyện có fact thú vị, hài hước, 5-8 dòng, kết bằng giá + '[affiliate link]' + hashtags",
+  "hashtags": ["#hashtag1", "#hashtag2"]
 }`
 
   let raw = ''
@@ -78,6 +82,10 @@ Trả về JSON theo đúng format sau, không thêm bất kỳ text nào ngoài
       characters: parsed.characters,
       scenes: parsed.scenes,
       cta: parsed.cta,
+      imagePrompt: parsed.imagePrompt ?? null,
+      shortCaption: parsed.shortCaption ?? null,
+      longCaption: parsed.longCaption ?? null,
+      hashtags: parsed.hashtags ?? [],
       status: 'draft',
     },
   })

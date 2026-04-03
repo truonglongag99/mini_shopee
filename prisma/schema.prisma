@@ -32,8 +32,13 @@ model Script {
   scenes      Json
   cta         String
   status      String   @default("draft")
-  videoStatus String   @default("none")
-  videoUrl    String?
-  taskId      String?
+  videoStatus        String   @default("none")
+  videoUrl           String?
+  taskId             String?
+  generatedImageUrl  String?
+  imagePrompt        String?
+  shortCaption       String?
+  longCaption        String?
+  hashtags           Json     @default("[]")
   createdAt   DateTime @default(now())
 }

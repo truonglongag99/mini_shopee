@@ -16,14 +16,20 @@ export async function POST(request: NextRequest) {
   if (!rawContent)
     return NextResponse.json({ error: 'Missing rawContent' }, { status: 400 })
 
-  const prompt = `Bạn là chuyên gia viết mô tả sản phẩm cho affiliate marketing TikTok/Shopee.
+  const prompt = `Bạn là chuyên gia viết nội dung affiliate marketing đa nền tảng (TikTok, Instagram, Facebook, Threads).
 
 Thông tin:
 - Tên sản phẩm: ${name ?? 'Chưa có'}
 - Danh mục: ${category ?? 'Chưa có'}
 - Nội dung thô: ${rawContent}
 
-Hãy viết lại thành mô tả sản phẩm súc tích, tự nhiên, phù hợp để AI tạo kịch bản drama TikTok. Bao gồm: công dụng, đối tượng phù hợp, điểm nổi bật. Cuối mô tả thêm 1 dòng gợi ý nhân vật và bối cảnh phù hợp cho kịch bản video. Trả về chỉ nội dung mô tả, không thêm tiêu đề hay markdown.`
+Hãy viết mô tả sản phẩm theo cấu trúc sau (trả về plain text, không markdown):
+
+1. Công dụng & điểm nổi bật thực sự của sản phẩm
+2. Đối tượng phù hợp
+3. Fact ít ai biết hoặc sự thật bất ngờ về sản phẩm/vấn đề mà SP giải quyết (1-2 fact cụ thể, có thể hơi gây sốc nhẹ)
+4. Gợi ý nhân vật kể chuyện: người dùng, thú cưng, hoặc chính sản phẩm — nhân vật nào phù hợp nhất để tạo content hài hước + có ích
+5. Góc hài hước có thể khai thác (ví dụ: nhân vật "sống sang hơn chủ", "tiết lộ bí mật", "phản ứng cường điệu")`
 
   let description = ''
   try {
