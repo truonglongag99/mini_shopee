@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface Scene { character: string; line: string; action: string }
@@ -28,6 +28,13 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
   const [expanded, setExpanded] = useState<string | null>(null)
   const [loading, setLoading] = useState<string | null>(null)
   const [generatingVideo, setGeneratingVideo] = useState<string | null>(null)
+
+  const hasPending = initial.some(s => s.videoStatus === 'pending')
+  useEffect(() => {
+    if (!hasPending) return
+    const interval = setInterval(() => router.refresh(), 10000)
+    return () => clearInterval(interval)
+  }, [hasPending, router])
 
   async function updateStatus(id: string, status: string) {
     setLoading(id)
