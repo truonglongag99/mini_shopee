@@ -17,6 +17,22 @@ export function ProductForm({ initialData, productId }: { initialData?: FormData
   const [form, setForm] = useState<FormData>(initialData ?? EMPTY)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [generatingDesc, setGeneratingDesc] = useState(false)
+
+  async function handleGenerateDescription() {
+    if (!form.description) return
+    setGeneratingDesc(true)
+    const res = await fetch('/api/products/generate-description', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: form.name, category: form.category, rawContent: form.description }),
+    })
+    if (res.ok) {
+      const { description } = await res.json()
+      setForm(p => ({ ...p, description }))
+    }
+    setGeneratingDesc(false)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); setLoading(true); setError('')
@@ -38,8 +54,13 @@ export function ProductForm({ initialData, productId }: { initialData?: FormData
         </div>
       ))}
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Mô tả sản phẩm</label>
-        <textarea id="description" name="description" value={form.description} onChange={e => setForm(p => ({...p, description: e.target.value}))} placeholder="Mô tả công dụng, tính năng nổi bật, đối tượng phù hợp..." rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400 text-sm resize-none" />
+        <div className="flex items-center justify-between mb-1">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">Mô tả sản phẩm</label>
+          <button type="button" onClick={handleGenerateDescription} disabled={generatingDesc || !form.description} className="text-xs text-orange-500 hover:text-orange-700 font-medium disabled:opacity-40">
+            {generatingDesc ? 'Đang tạo...' : 'Tạo mô tả từ nội dung ↑'}
+          </button>
+        </div>
+        <textarea id="description" name="description" value={form.description} onChange={e => setForm(p => ({...p, description: e.target.value}))} placeholder="Nhập nội dung thô rồi nhấn 'Tạo mô tả', hoặc tự điền..." rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400 text-sm resize-none" />
       </div>
       {form.imageUrl && (
         <div><p className="text-xs text-gray-500 mb-1">Preview:</p>
