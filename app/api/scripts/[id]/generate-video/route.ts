@@ -5,6 +5,8 @@ import { isValidSession } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
+fal.config({ credentials: process.env.FAL_KEY })
+
 type Scene = { character: string; line: string; action: string }
 
 function buildPrompt(script: { setting: string; characters: unknown; scenes: unknown; cta: string }): string {
