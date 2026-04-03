@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { fal } from '@fal-ai/client'
 import { prisma } from '@/lib/prisma'
 import { isValidSession } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
-
-fal.config({ credentials: process.env.FAL_KEY })
 
 type Scene = { character: string; line: string; action: string }
 
@@ -53,17 +50,34 @@ export async function POST(
   await prisma.script.update({ where: { id }, data: { videoStatus: 'pending' } })
 
   const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/fal?scriptId=${id}`
-  const imageUrl = script.product.imageUrl
 
-  await fal.queue.submit('fal-ai/kling-video/v1.6/standard/image-to-video', {
-    input: {
-      prompt: buildPrompt(script),
-      image_url: imageUrl,
-      duration: '5',
-      aspect_ratio: '9:16',
+  const res = await fetch('https://api.piapi.ai/api/v1/task', {
+    method: 'POST',
+    headers: {
+      'x-api-key': process.env.PIAPI_KEY!,
+      'Content-Type': 'application/json',
     },
-    webhookUrl,
+    body: JSON.stringify({
+      model: 'kling',
+      task_type: 'video_generation',
+      input: {
+        prompt: buildPrompt(script),
+        image_url: script.product.imageUrl,
+        duration: 5,
+        aspect_ratio: '9:16',
+        mode: 'std',
+        version: '1.6',
+      },
+      webhook_config: {
+        webhook_url: webhookUrl,
+      },
+    }),
   })
+
+  if (!res.ok) {
+    await prisma.script.update({ where: { id }, data: { videoStatus: 'failed' } })
+    return NextResponse.json({ error: 'Failed to submit video job' }, { status: 500 })
+  }
 
   return NextResponse.json({ status: 'pending' })
 }
