@@ -4,7 +4,6 @@ import { prisma } from '@/lib/prisma'
 import { isValidSession } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
-export const maxDuration = 300
 
 type Scene = { character: string; line: string; action: string }
 
@@ -43,28 +42,21 @@ export async function POST(
     return NextResponse.json({ error: 'Script not found' }, { status: 404 })
   if (script.status !== 'approved')
     return NextResponse.json({ error: 'Script must be approved first' }, { status: 400 })
+  if (script.videoStatus === 'pending')
+    return NextResponse.json({ error: 'Video already being generated' }, { status: 400 })
 
   await prisma.script.update({ where: { id }, data: { videoStatus: 'pending' } })
 
-  try {
-    const result = await fal.subscribe('fal-ai/kling-video/v1.6/standard/text-to-video', {
-      input: {
-        prompt: buildPrompt(script),
-        duration: '5',
-        aspect_ratio: '9:16',
-      },
-    }) as { video: { url: string } }
+  const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/fal?scriptId=${id}`
 
-    const videoUrl = result.video.url
+  await fal.queue.submit('fal-ai/kling-video/v1.6/standard/text-to-video', {
+    input: {
+      prompt: buildPrompt(script),
+      duration: '5',
+      aspect_ratio: '9:16',
+    },
+    webhookUrl,
+  })
 
-    await prisma.script.update({
-      where: { id },
-      data: { videoStatus: 'completed', videoUrl },
-    })
-
-    return NextResponse.json({ videoUrl })
-  } catch {
-    await prisma.script.update({ where: { id }, data: { videoStatus: 'failed' } })
-    return NextResponse.json({ error: 'Video generation failed' }, { status: 500 })
-  }
+  return NextResponse.json({ status: 'pending' })
 }
