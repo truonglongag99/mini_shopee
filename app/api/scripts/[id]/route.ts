@@ -12,12 +12,23 @@ export async function PATCH(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await context.params
-  const { status } = await request.json().catch(() => ({}))
+  const body = await request.json().catch(() => ({}))
+  const { status, title, setting, characters, scenes, cta } = body
 
-  if (!['draft', 'approved', 'rejected'].includes(status))
+  if (status !== undefined && !['draft', 'approved', 'rejected'].includes(status))
     return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
 
-  const script = await prisma.script.update({ where: { id }, data: { status } })
+  const script = await prisma.script.update({
+    where: { id },
+    data: {
+      ...(status !== undefined && { status }),
+      ...(title !== undefined && { title }),
+      ...(setting !== undefined && { setting }),
+      ...(characters !== undefined && { characters }),
+      ...(scenes !== undefined && { scenes }),
+      ...(cta !== undefined && { cta }),
+    },
+  })
   return NextResponse.json(script)
 }
 
