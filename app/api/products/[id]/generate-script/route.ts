@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import OpenAI from 'openai'
 import { prisma } from '@/lib/prisma'
 import { isValidSession } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
-const client = new Anthropic()
+const anthropic = new Anthropic()
+const openai = new OpenAI()
 
 export async function POST(
   request: NextRequest,
@@ -44,13 +46,23 @@ Trả về JSON theo đúng format sau, không thêm bất kỳ text nào ngoài
   "cta": "câu kêu gọi mua hàng cuối video có giá và nhắc Shopee"
 }`
 
-  const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 1024,
-    messages: [{ role: 'user', content: prompt }],
-  })
+  let raw = ''
+  try {
+    const message = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: prompt }],
+    })
+    raw = message.content[0].type === 'text' ? message.content[0].text : ''
+  } catch {
+    const message = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: prompt }],
+    })
+    raw = message.choices[0].message.content ?? ''
+  }
 
-  const raw = message.content[0].type === 'text' ? message.content[0].text : ''
   const parsed = JSON.parse(raw)
 
   const script = await prisma.script.create({

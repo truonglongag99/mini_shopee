@@ -13,6 +13,7 @@
     "@prisma/client": "^5.22.0",
     "@vercel/functions": "^3.4.3",
     "next": "^16.2.2",
+    "openai": "^6.33.0",
     "prisma": "^5.22.0",
     "react": "^18",
     "react-dom": "^18"
