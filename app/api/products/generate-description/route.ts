@@ -35,14 +35,14 @@ Hãy viết mô tả sản phẩm theo cấu trúc sau (trả về plain text, k
   try {
     const message = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 512,
+      max_tokens: 1024,
       messages: [{ role: 'user', content: prompt }],
     })
     description = message.content[0].type === 'text' ? message.content[0].text : ''
   } catch {
     const message = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
-      max_tokens: 512,
+      max_tokens: 1024,
       messages: [{ role: 'user', content: prompt }],
     })
     description = message.choices[0].message.content ?? ''
