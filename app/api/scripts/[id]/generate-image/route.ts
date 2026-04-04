@@ -34,7 +34,7 @@ export async function POST(
         image_size: 'square_hd',
         num_images: 1,
       },
-    }) as { images: { url: string }[] }
+    }) as unknown as { images: { url: string }[] }
     imageUrl = result.images[0].url
   } catch {
     const response = await openai.images.generate({
@@ -43,7 +43,7 @@ export async function POST(
       size: '1024x1024',
       n: 1,
     })
-    imageUrl = response.data[0].url ?? ''
+    imageUrl = response.data?.[0]?.url ?? ''
   }
 
   if (!imageUrl)
