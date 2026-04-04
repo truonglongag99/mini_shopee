@@ -58,14 +58,14 @@ Trả về JSON theo đúng format sau, không thêm bất kỳ text nào ngoài
   try {
     const message = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1024,
+      max_tokens: 4096,
       messages: [{ role: 'user', content: prompt }],
     })
     raw = message.content[0].type === 'text' ? message.content[0].text : ''
   } catch {
     const message = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
-      max_tokens: 1024,
+      max_tokens: 4096,
       messages: [{ role: 'user', content: prompt }],
     })
     raw = message.choices[0].message.content ?? ''
