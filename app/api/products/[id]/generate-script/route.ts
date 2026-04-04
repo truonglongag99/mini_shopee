@@ -37,6 +37,9 @@ Yêu cầu:
   + Sản phẩm thời trang / quần áo nữ / đồ lót: dùng lời lẽ khêu gợi nhẹ, gợi cảm, tôn vinh vẻ đẹp cơ thể
   + Sản phẩm thú cưng / trẻ em / gia đình: hài hước dễ thương, "mất dạy" kiểu ngây thơ
   + Các sản phẩm khác: bạo miệng vui vẻ, gen Z, không quá nhạy cảm
+- Xưng hô:
+  + Sản phẩm dành cho nữ (thời trang nữ, mỹ phẩm, đồ lót, skincare...): xưng "tui", gọi người đọc là "mấy bà"
+  + Sản phẩm khác: xưng "tui", gọi người đọc là "mấy ông/bạn" hoặc trung tính
 - Caption ngắn (TikTok/Threads): hook cực mạnh, 3-5 dòng, emoji nhiều, ngôn ngữ gen Z VN, "Link trong bio 🔗"
 - Caption dài (Facebook/Instagram): kể chuyện táo bạo hơn, có fact bất ngờ, kết có giá + link
 
