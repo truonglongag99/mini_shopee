@@ -31,9 +31,14 @@ Thông tin sản phẩm:
 
 Yêu cầu:
 - Nhân vật: 1 hoặc 2, có thể là người/thú cưng/động vật tự kể — chọn theo mô tả sản phẩm
-- Tone: có ích (fact thật) + hài hước nhẹ (cường điệu dễ thương, tự trào, twist bất ngờ)
-- Caption ngắn cho TikTok/Threads: hook mạnh, 3-5 dòng, emoji, "Link trong bio"
-- Caption dài cho Facebook/Instagram: kể chuyện đầy đủ hơn, có fact, có link affiliate
+- Tone cơ bản: có ích (fact thật) + hài hước bạo miệng kiểu TikTok VN — nói thẳng, hơi lố, phá cách, twist bất ngờ, hook gây sốc nhẹ
+- Điều chỉnh tone theo sản phẩm:
+  + Sản phẩm giáo dục giới tính / sức khỏe tình dục: dùng ngôn từ hơi tục nhẹ, ám chỉ táo bạo, thẳng thắn về chủ đề nhạy cảm nhưng vẫn mang tính giáo dục
+  + Sản phẩm thời trang / quần áo nữ / đồ lót: dùng lời lẽ khêu gợi nhẹ, gợi cảm, tôn vinh vẻ đẹp cơ thể
+  + Sản phẩm thú cưng / trẻ em / gia đình: hài hước dễ thương, "mất dạy" kiểu ngây thơ
+  + Các sản phẩm khác: bạo miệng vui vẻ, gen Z, không quá nhạy cảm
+- Caption ngắn (TikTok/Threads): hook cực mạnh, 3-5 dòng, emoji nhiều, ngôn ngữ gen Z VN, "Link trong bio 🔗"
+- Caption dài (Facebook/Instagram): kể chuyện táo bạo hơn, có fact bất ngờ, kết có giá + link
 
 Trả về JSON theo đúng format sau, không thêm bất kỳ text nào ngoài JSON:
 {
