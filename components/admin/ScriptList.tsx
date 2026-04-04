@@ -51,6 +51,7 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
   const [editForm, setEditForm] = useState<EditForm | null>(null)
   const [loading, setLoading] = useState<string | null>(null)
   const [_generatingVideo, _setGeneratingVideo] = useState<string | null>(null)
+  const [generatingImage, setGeneratingImage] = useState<string | null>(null)
 
   const scripts = filter === 'all' ? initial : initial.filter(s => s.status === filter)
 
@@ -103,6 +104,15 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
     setLoading(null)
   }
 
+  async function handleGenerateImage(id: string) {
+    setGeneratingImage(id)
+    const res = await fetch(`/api/scripts/${id}/generate-image`, { method: 'POST' })
+    if (!res.ok) alert('Tạo ảnh thất bại. Thử lại!')
+    router.refresh()
+    setGeneratingImage(null)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function handleGenerateVideo(id: string) {
     _setGeneratingVideo(id)
     const res = await fetch(`/api/scripts/${id}/generate-video`, { method: 'POST' })
@@ -217,6 +227,12 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                     <p className="text-xs font-semibold text-gray-500 uppercase mb-1">CTA</p>
                     <p className="text-sm text-orange-600 font-medium">{s.cta}</p>
                   </div>
+                  {s.imagePrompt && (
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Image Prompt</p>
+                      <p className="text-xs text-gray-500 bg-white border rounded-lg px-3 py-2 italic">{s.imagePrompt}</p>
+                    </div>
+                  )}
                   {(s.shortCaption || s.longCaption) && (
                     <div className="space-y-3">
                       {s.shortCaption && (
@@ -267,6 +283,11 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                       <button disabled={loading === s.id} onClick={() => updateStatus(s.id, 'draft')} className="bg-yellow-100 text-yellow-700 text-xs px-3 py-1.5 rounded-lg hover:bg-yellow-200 disabled:opacity-50">Draft lại</button>
                     )}
                     <button onClick={() => startEdit(s)} className="bg-blue-50 text-blue-600 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-100">Chỉnh sửa</button>
+                    {s.imagePrompt && (
+                      <button disabled={generatingImage === s.id} onClick={() => handleGenerateImage(s.id)} className="bg-orange-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-orange-600 disabled:opacity-50">
+                        {generatingImage === s.id ? 'Đang tạo ảnh...' : s.generatedImageUrl ? 'Tạo lại ảnh' : 'Tạo ảnh'}
+                      </button>
+                    )}
                     <button disabled={loading === s.id} onClick={() => handleDelete(s.id)} className="ml-auto text-red-500 text-xs px-3 py-1.5 rounded-lg hover:bg-red-50 disabled:opacity-50">Xóa</button>
                   </div>
                 </>
