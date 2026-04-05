@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 export default async function ScriptsPage() {
   const scripts = await prisma.script.findMany({
     orderBy: { createdAt: 'desc' },
-    include: { product: { select: { name: true, imageUrl: true, category: true } } },
+    include: { product: { select: { name: true, imageUrl: true, category: true, affiliateUrl: true } } },
   })
   const serialized = JSON.parse(JSON.stringify(scripts))
   return (

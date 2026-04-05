@@ -19,7 +19,7 @@ interface Script {
   hashtags: string[]
   generatedImageUrl: string | null
   createdAt: string
-  product: { name: string; imageUrl: string; category: string }
+  product: { name: string; imageUrl: string; category: string; affiliateUrl: string }
 }
 
 interface EditForm {
@@ -50,7 +50,6 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
   const [editing, setEditing] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<EditForm | null>(null)
   const [loading, setLoading] = useState<string | null>(null)
-  const [_generatingVideo, _setGeneratingVideo] = useState<string | null>(null)
   const [generatingImage, setGeneratingImage] = useState<string | null>(null)
 
   const scripts = filter === 'all' ? initial : initial.filter(s => s.status === filter)
@@ -112,14 +111,6 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
     setGeneratingImage(null)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async function handleGenerateVideo(id: string) {
-    _setGeneratingVideo(id)
-    const res = await fetch(`/api/scripts/${id}/generate-video`, { method: 'POST' })
-    if (!res.ok) alert('Tạo video thất bại. Thử lại!')
-    router.refresh()
-    _setGeneratingVideo(null)
-  }
 
   async function handleDelete(id: string) {
     if (!confirm('Xóa kịch bản này?')) return
@@ -227,9 +218,19 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                     <p className="text-xs font-semibold text-gray-500 uppercase mb-1">CTA</p>
                     <p className="text-sm text-orange-600 font-medium">{s.cta}</p>
                   </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="text-xs font-semibold text-gray-500 uppercase">Affiliate URL</p>
+                      <button onClick={() => navigator.clipboard.writeText(s.product.affiliateUrl)} className="text-xs text-blue-500 hover:underline">Copy</button>
+                    </div>
+                    <p className="text-xs text-blue-500 bg-white border rounded-lg px-3 py-2 truncate">{s.product.affiliateUrl}</p>
+                  </div>
                   {s.imagePrompt && (
                     <div>
-                      <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Image Prompt</p>
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-xs font-semibold text-gray-500 uppercase">Image Prompt</p>
+                        <button onClick={() => navigator.clipboard.writeText(s.imagePrompt!)} className="text-xs text-blue-500 hover:underline">Copy</button>
+                      </div>
                       <p className="text-xs text-gray-500 bg-white border rounded-lg px-3 py-2 italic">{s.imagePrompt}</p>
                     </div>
                   )}
