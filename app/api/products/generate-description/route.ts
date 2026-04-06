@@ -23,26 +23,23 @@ Thông tin:
 - Danh mục: ${category ?? 'Chưa có'}
 - Nội dung thô: ${rawContent}
 
-Hãy viết mô tả sản phẩm theo cấu trúc sau (trả về plain text, không markdown):
-
-1. Công dụng & điểm nổi bật thực sự của sản phẩm
-2. Đối tượng phù hợp
-3. Fact ít ai biết hoặc sự thật bất ngờ về sản phẩm/vấn đề mà SP giải quyết (1-2 fact cụ thể, có thể hơi gây sốc nhẹ)
-4. Gợi ý nhân vật kể chuyện: người dùng, thú cưng, hoặc chính sản phẩm — nhân vật nào phù hợp nhất để tạo content hài hước + có ích
-5. Góc hài hước có thể khai thác (ví dụ: nhân vật "sống sang hơn chủ", "tiết lộ bí mật", "phản ứng cường điệu")`
+Viết mô tả sản phẩm ngắn gọn (tối đa 150 từ), plain text, không markdown, gồm:
+- Công dụng chính + đối tượng phù hợp (1-2 câu)
+- 1 fact bất ngờ/ít ai biết về sản phẩm (1 câu)
+- Nhân vật kể chuyện phù hợp nhất + góc hài hước có thể khai thác (1-2 câu)`
 
   let description = ''
   try {
     const message = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1024,
+      max_tokens: 2048,
       messages: [{ role: 'user', content: prompt }],
     })
     description = message.content[0].type === 'text' ? message.content[0].text : ''
   } catch {
     const message = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
-      max_tokens: 1024,
+      max_tokens: 2048,
       messages: [{ role: 'user', content: prompt }],
     })
     description = message.choices[0].message.content ?? ''

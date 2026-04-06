@@ -168,7 +168,7 @@ OUTPUT FORMAT — JSON THUẦN, KHÔNG THÊM BẤT CỨ TEXT NÀO BÊN NGOÀI:
   "imagePrompt": "Photorealistic vertical social media photo. ${selectedAngle}. Scene: [mô tả cảnh cụ thể liên quan sản phẩm]. Characters: [mô tả nhân vật nếu có]. Lighting: natural/warm/soft. Style: candid lifestyle, not staged. Colors: vibrant but natural. No text, no watermark, no logo.",
   "tiktokHook": "Câu hook đầu tiên cho video TikTok — tối đa 1 câu, đủ mạnh để giữ người xem không vuốt qua",
   "shortCaption": "Caption TikTok/Threads — 3 đến 5 dòng, hook mạnh dòng đầu, tự nhiên như status người thật, có thể có emoji, KHÔNG rõ là quảng cáo",
-  "longCaption": "Caption Facebook/Instagram — 6 đến 10 dòng, kể chuyện có đầu có đuôi, yếu tố cá nhân cao, CTA nếu có phải cực kỳ mềm",
+  "longCaption": "Caption Facebook — viết như người dùng thật đang chia sẻ trải nghiệm cá nhân, có thông tin hữu ích/fact thật về sản phẩm, xen 1 câu hài mang tính tranh cãi nhẹ (kiểu nói thẳng gây ý kiến trái chiều nhưng không xúc phạm), 6-10 dòng, không lộ là quảng cáo, CTA nếu có phải cực kỳ tự nhiên",
   "hashtags": ["#tag1", "#tag2", "#tag3", "#tag4", "#tag5", "#tag6", "#tag7"]
 }
 ====================
