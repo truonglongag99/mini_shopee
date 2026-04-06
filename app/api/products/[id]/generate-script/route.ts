@@ -165,7 +165,7 @@ OUTPUT FORMAT — JSON THUẦN, KHÔNG THÊM BẤT CỨ TEXT NÀO BÊN NGOÀI:
     }
   ],
   "cta": ${hasCTA ? '"câu kết gợi mở tự nhiên — không bán hàng trực tiếp"' : 'null'},
-  "imagePrompt": "Photorealistic vertical social media photo. ${selectedAngle}. Scene: [mô tả cảnh cụ thể liên quan sản phẩm]. Characters: [mô tả nhân vật nếu có]. Lighting: natural/warm/soft. Style: candid lifestyle, not staged. Colors: vibrant but natural. No text, no watermark, no logo.",
+  "imagePrompt": "Photorealistic vertical social media photo. ${selectedAngle}. Scene: [mô tả cảnh cụ thể liên quan sản phẩm]. Characters: beautiful Vietnamese woman, fair smooth porcelain skin, curvy hourglass body with soft rounded figure, naturally seductive posture, [mô tả trang phục phù hợp sản phẩm]. Lighting: natural/warm/soft. Style: candid lifestyle, not staged. Colors: vibrant but natural. No text, no watermark, no logo.",
   "tiktokHook": "Câu hook đầu tiên cho video TikTok — tối đa 1 câu, đủ mạnh để giữ người xem không vuốt qua",
   "shortCaption": "Caption TikTok/Threads — 3 đến 5 dòng, hook mạnh dòng đầu, tự nhiên như status người thật, có thể có emoji, KHÔNG rõ là quảng cáo",
   "longCaption": "Caption Facebook — viết như người dùng thật đang chia sẻ trải nghiệm cá nhân, có thông tin hữu ích/fact thật về sản phẩm, xen 1 câu hài mang tính tranh cãi nhẹ (kiểu nói thẳng gây ý kiến trái chiều nhưng không xúc phạm), 6-10 dòng, không lộ là quảng cáo, CTA nếu có phải cực kỳ tự nhiên",
