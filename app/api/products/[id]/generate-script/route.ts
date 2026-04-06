@@ -67,6 +67,28 @@ const selectedAngle    = cameraAngles[Math.floor(Math.random() * cameraAngles.le
 const hasCTA           = Math.random() > 0.4; // 60% có CTA, 40% không
 
 // ============================================================
+// DETECT SCENE CONTEXT THEO DANH MỤC
+// ============================================================
+const sceneContext = (() => {
+  const cat = product.category.toLowerCase()
+  if (/đồ ngủ|pyjama|ngủ|loungewear/.test(cat))
+    return 'cozy bedroom or living room at home, soft morning light or warm evening lamp'
+  if (/đồ lót|lingerie|bikini/.test(cat))
+    return 'elegant bedroom with soft warm lighting, intimate and tasteful setting'
+  if (/thời trang|áo|quần|váy|đầm/.test(cat))
+    return 'lifestyle setting — café, street, or modern interior with natural daylight'
+  if (/mỹ phẩm|skincare|makeup|son|kem/.test(cat))
+    return 'bright vanity table or bathroom counter with natural window light'
+  if (/thú cưng|pet|chó|mèo|vẹt/.test(cat))
+    return 'cozy home interior, living room or garden, with pet in frame'
+  if (/gia đình|trẻ em|mẹ bầu/.test(cat))
+    return 'warm home environment, kitchen or living room, family-friendly atmosphere'
+  if (/thể thao|gym|yoga|fitness/.test(cat))
+    return 'gym, yoga studio, or outdoor park with bright natural light'
+  return 'clean modern home interior or outdoor lifestyle setting with natural light'
+})()
+
+// ============================================================
 // STEP 2: DETECT GENDER HINT TỪ DANH MỤC
 // ============================================================
 
