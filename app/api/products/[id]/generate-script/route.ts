@@ -21,46 +21,158 @@ export async function POST(
   if (!product)
     return NextResponse.json({ error: 'Product not found' }, { status: 404 })
 
-  const prompt = `Bạn là chuyên gia tạo content affiliate marketing đa nền tảng (TikTok, Instagram, Facebook, Threads) theo phong cách: nhân vật tự kể chuyện + fact bất ngờ + hài hước nhẹ.
+  // ============================================================
+// STEP 1: INJECT RANDOMNESS TỪ CODE — không để model tự chọn
+// ============================================================
 
-Thông tin sản phẩm:
+const contentTypes = [
+  "Kể chuyện trải nghiệm cá nhân",
+  "Hỏi ý kiến gây tranh luận",
+  "Tình huống hài hước / fail",
+  "Review bất ngờ (twist)",
+  "So sánh trước - sau",
+  "Góc nhìn gây tranh cãi nhẹ",
+];
+
+const contextScenarios = [
+  "đang cuộn feed lúc 11 giờ đêm",
+  "vừa nhận hàng xong",
+  "đang nằm ườn cuối tuần",
+  "vừa đi làm về mệt",
+  "đang ngồi café một mình",
+  "đang dọn tủ đồ",
+];
+
+const characterMoods = [
+  "đang bực bội nhẹ",
+  "bất ngờ theo chiều hướng tốt",
+  "hoài nghi lúc đầu",
+  "hào hứng thái quá",
+  "thờ ơ rồi bị cuốn",
+  "đang so sánh lung tung",
+];
+
+const cameraAngles = [
+  "close-up tay cầm sản phẩm, ánh sáng tự nhiên ban ngày",
+  "flat lay trên nền pastel, góc chụp từ trên xuống",
+  "POV người dùng đang thử sản phẩm lần đầu",
+  "lifestyle shot trong phòng ngủ, đèn vàng ấm",
+  "candid shot kiểu chụp lén tự nhiên ngoài đường",
+];
+
+const selectedType     = contentTypes[Math.floor(Math.random() * contentTypes.length)];
+const selectedContext  = contextScenarios[Math.floor(Math.random() * contextScenarios.length)];
+const selectedMood     = characterMoods[Math.floor(Math.random() * characterMoods.length)];
+const selectedAngle    = cameraAngles[Math.floor(Math.random() * cameraAngles.length)];
+const hasCTA           = Math.random() > 0.4; // 60% có CTA, 40% không
+
+// ============================================================
+// STEP 2: DETECT GENDER HINT TỪ DANH MỤC
+// ============================================================
+
+const femaleCategories = ["thời trang nữ", "đồ lót", "mỹ phẩm", "skincare", "phụ kiện nữ"];
+const isFemaleCategory = femaleCategories.some(c =>
+  product.category.toLowerCase().includes(c)
+);
+const pronounSet = isFemaleCategory
+  ? `"tui" - "mấy bà" - "chị em"`
+  : `"tui" - "mấy ông" - "mọi người"`;
+
+// ============================================================
+// STEP 3: PROMPT CHÍNH
+// ============================================================
+
+const prompt = `
+Bạn là chuyên gia viết content mạng xã hội cho affiliate marketing tại Việt Nam.
+Nhiệm vụ: tạo 1 content piece hoàn chỉnh cho sản phẩm dưới đây.
+
+====================
+THÔNG TIN SẢN PHẨM:
 - Tên: ${product.name}
 - Danh mục: ${product.category}
-- Giá: ${product.price.toLocaleString('vi-VN')}đ
-- Mô tả: ${product.description ?? 'Không có mô tả'}
+- Giá: ${product.price.toLocaleString("vi-VN")}đ
+- Mô tả: ${product.description ?? "Không có mô tả"}
+====================
 
-Yêu cầu:
-- Nhân vật: 1 hoặc 2, có thể là người/thú cưng/động vật tự kể — chọn theo mô tả sản phẩm
-- Tone cơ bản: có ích (fact thật) + hài hước bạo miệng kiểu TikTok VN — nói thẳng, hơi lố, phá cách, twist bất ngờ, hook gây sốc nhẹ
-- Điều chỉnh tone theo sản phẩm:
-  + Sản phẩm giáo dục giới tính / sức khỏe tình dục: dùng ngôn từ hơi tục nhẹ, ám chỉ táo bạo, thẳng thắn về chủ đề nhạy cảm nhưng vẫn mang tính giáo dục
-  + Sản phẩm thời trang / quần áo nữ / đồ lót: dùng lời lẽ khêu gợi nhẹ, gợi cảm, tôn vinh vẻ đẹp cơ thể, chia sẽ về cảm nhận cá nhân như đã dùng rồi
-  + Sản phẩm thú cưng / trẻ em / gia đình: hài hước dễ thương, "mất dạy" kiểu ngây thơ
-  + Các sản phẩm khác: bạo miệng vui vẻ, gen Z, không quá nhạy cảm
-- Xưng hô:
-  + Sản phẩm dành cho nữ (thời trang nữ, mỹ phẩm, đồ lót, skincare...): xưng "tui", gọi người đọc là "mấy bà"
-  + Sản phẩm khác: xưng "tui", gọi người đọc là "mấy ông/bạn" hoặc trung tính
-- Caption ngắn (TikTok/Threads): hook cực mạnh, 3-5 dòng, emoji nhiều, ngôn ngữ gen Z VN, "Link trong bio 🔗"
-- Caption dài (Facebook/Instagram): kể chuyện táo bạo hơn, có fact bất ngờ, kết có giá + link
+====================
+THÔNG SỐ BẮT BUỘC (KHÔNG ĐƯỢC THAY ĐỔI):
+- Kiểu nội dung: ${selectedType}
+- Bối cảnh nhân vật: Nhân vật đang ${selectedContext}
+- Trạng thái cảm xúc: ${selectedMood}
+- Góc ảnh gợi ý: ${selectedAngle}
+- CTA: ${hasCTA ? "CÓ — nhưng phải mềm, gợi mở, không bán trực tiếp" : "KHÔNG có CTA — kết bằng cảm xúc hoặc câu hỏi bỏ ngỏ"}
+====================
 
-Trả về JSON theo đúng format sau, không thêm bất kỳ text nào ngoài JSON:
+====================
+NGUYÊN TẮC NỘI DUNG:
+- KHÔNG viết như quảng cáo
+- KHÔNG dùng "link trong bio" hoặc "mua ngay"
+- KHÔNG lặp lại hook quen thuộc ("ai cần thì dm", "review thật lòng nha")
+- Văn phong tự nhiên — có thể có lỗi nhỏ, câu ngắn, ngắt dòng bất ngờ
+- Ưu tiên cảm xúc và câu chuyện hơn thông tin sản phẩm
+====================
+
+====================
+ĐIỀU CHỈNH THEO DANH MỤC (${product.category}):
+${
+  /thời trang|đồ lót|nữ|bikini/i.test(product.category)
+    ? "→ Gợi cảm tinh tế, tập trung cảm nhận khi mặc / tự tin hơn, KHÔNG mô tả cơ thể trực tiếp"
+    : /sức khỏe|giới tính|sinh lý/i.test(product.category)
+      ? "→ Thẳng thắn kiểu chia sẻ giữa bạn bè, không dung tục, có thể dùng từ lóng quen"
+      : /thú cưng|pet|chó|mèo/i.test(product.category)
+        ? "→ Dễ thương, nhân hoá thú cưng, hài kiểu ngây thơ vô số tội"
+        : /gia đình|trẻ em|mẹ bầu/i.test(product.category)
+          ? "→ Ấm áp, thật thà, nói về khoảnh khắc đời thường"
+          : "→ Vui vẻ, relatable, khai thác tình huống đời thường ai cũng gặp"
+}
+====================
+
+====================
+XƯNG HÔ: ${pronounSet}
+====================
+
+====================
+VÍ DỤ SAI ❌ — KHÔNG viết như này:
+"Sản phẩm này thật sự quá tốt luôn! Tui dùng rồi thấy hiệu quả ngay. 
+Ai muốn mua thì link trong bio nha mọi người! Đừng bỏ lỡ!"
+
+VÍ DỤ ĐÚNG ✅ — Hãy viết gần giống thế này:
+"Hôm qua chồng tui nhìn tui kiểu lạ lắm
+không nói gì hết, chỉ đi nấu cơm luôn không cần nhắc
+tui cũng không hiểu sao... mà thôi kệ"
+====================
+
+====================
+CẤU TRÚC SCENES:
+- 4 đến 6 cảnh
+- Mỗi "line" tối đa 2 câu ngắn
+- Cảnh đầu: hook — gây tò mò hoặc nhận dạng được ngay
+- Cảnh giữa: build up cảm xúc / tình huống
+- Cảnh cuối: twist hoặc kết tự nhiên
+====================
+
+====================
+OUTPUT FORMAT — JSON THUẦN, KHÔNG THÊM BẤT CỨ TEXT NÀO BÊN NGOÀI:
 {
-  "title": "tiêu đề nội dung",
-  "setting": "mô tả bối cảnh",
-  "characters": ["tên nhân vật"],
+  "title": "tiêu đề nội dung (dùng nội bộ)",
+  "setting": "mô tả bối cảnh cụ thể (thời gian, địa điểm, tình huống)",
+  "characters": ["tên nhân vật 1 (vai trò, tính cách)", "tên nhân vật 2 nếu có"],
   "scenes": [
     {
       "character": "tên nhân vật",
-      "line": "lời thoại",
-      "action": "hành động/biểu cảm"
+      "line": "lời thoại tự nhiên, tối đa 2 câu",
+      "action": "hành động hoặc biểu cảm cụ thể"
     }
   ],
-  "cta": "câu kêu gọi mua có giá và nhắc Shopee",
-  "imagePrompt": "Detailed English prompt for AI image generation — describe scene, characters, lighting, style, mood. Photorealistic, vibrant, social media ready.",
-  "shortCaption": "Caption TikTok/Threads: nhân vật xưng tao/tôi tự kể, có fact bất ngờ, hài hước, 3-5 dòng, emoji phù hợp, kết bằng 'Link trong bio 🔗'",
-  "longCaption": "Caption Facebook/Instagram: nhân vật tự giới thiệu, kể chuyện có fact thú vị, hài hước, 5-8 dòng, kết bằng giá + '[affiliate link]' + hashtags",
-  "hashtags": ["#hashtag1", "#hashtag2"]
-}`
+  "cta": ${hasCTA ? '"câu kết gợi mở tự nhiên — không bán hàng trực tiếp"' : 'null'},
+  "imagePrompt": "Photorealistic vertical social media photo. ${selectedAngle}. Scene: [mô tả cảnh cụ thể liên quan sản phẩm]. Characters: [mô tả nhân vật nếu có]. Lighting: natural/warm/soft. Style: candid lifestyle, not staged. Colors: vibrant but natural. No text, no watermark, no logo.",
+  "tiktokHook": "Câu hook đầu tiên cho video TikTok — tối đa 1 câu, đủ mạnh để giữ người xem không vuốt qua",
+  "shortCaption": "Caption TikTok/Threads — 3 đến 5 dòng, hook mạnh dòng đầu, tự nhiên như status người thật, có thể có emoji, KHÔNG rõ là quảng cáo",
+  "longCaption": "Caption Facebook/Instagram — 6 đến 10 dòng, kể chuyện có đầu có đuôi, yếu tố cá nhân cao, CTA nếu có phải cực kỳ mềm",
+  "hashtags": ["#tag1", "#tag2", "#tag3", "#tag4", "#tag5", "#tag6", "#tag7"]
+}
+====================
+`;
 
   let raw = ''
   try {
@@ -89,8 +201,9 @@ Trả về JSON theo đúng format sau, không thêm bất kỳ text nào ngoài
       setting: parsed.setting,
       characters: parsed.characters,
       scenes: parsed.scenes,
-      cta: parsed.cta,
+      cta: parsed.cta ?? '',
       imagePrompt: parsed.imagePrompt ?? null,
+      tiktokHook: parsed.tiktokHook ?? null,
       shortCaption: parsed.shortCaption ?? null,
       longCaption: parsed.longCaption ?? null,
       hashtags: parsed.hashtags ?? [],

@@ -37,6 +37,7 @@ model Script {
   taskId             String?
   generatedImageUrl  String?
   imagePrompt        String?
+  tiktokHook         String?
   shortCaption       String?
   longCaption        String?
   hashtags           Json     @default("[]")

@@ -14,6 +14,7 @@ interface Script {
   videoStatus: string
   videoUrl: string | null
   imagePrompt: string | null
+  tiktokHook: string | null
   shortCaption: string | null
   longCaption: string | null
   hashtags: string[]
@@ -234,8 +235,17 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                       <p className="text-xs text-gray-500 bg-white border rounded-lg px-3 py-2 italic">{s.imagePrompt}</p>
                     </div>
                   )}
-                  {(s.shortCaption || s.longCaption) && (
+                  {(s.tiktokHook || s.shortCaption || s.longCaption) && (
                     <div className="space-y-3">
+                      {s.tiktokHook && (
+                        <div>
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="text-xs font-semibold text-gray-500 uppercase">TikTok Hook</p>
+                            <button onClick={() => navigator.clipboard.writeText(s.tiktokHook!)} className="text-xs text-blue-500 hover:underline">Copy</button>
+                          </div>
+                          <p className="text-sm font-medium text-gray-800 bg-white border rounded-lg px-3 py-2">{s.tiktokHook}</p>
+                        </div>
+                      )}
                       {s.shortCaption && (
                         <div>
                           <div className="flex items-center justify-between mb-1">
