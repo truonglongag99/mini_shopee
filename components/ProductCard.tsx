@@ -4,7 +4,7 @@ interface Product { id: string; name: string; imageUrl: string; price: number; c
 
 export function ProductCard({ product }: { product: Product }) {
   return (
-    <Link href={`/go/${product.id}`} className="group block bg-white rounded-lg shadow hover:shadow-md transition-shadow overflow-hidden">
+    <Link prefetch={false} href={`/go/${product.id}`} className="group block bg-white rounded-lg shadow hover:shadow-md transition-shadow overflow-hidden">
       <div className="relative w-full aspect-square bg-gray-100 overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" />
