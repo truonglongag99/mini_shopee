@@ -64,18 +64,25 @@ export async function POST(
 
   const token = getKlingToken()
 
-  const res = await fetch('https://api.klingai.com/v1/videos/text2video', {
+  const webhookUrl = process.env.NEXT_PUBLIC_APP_URL
+    ? `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/kling?scriptId=${id}`
+    : ''
+
+  const res = await fetch('https://api-singapore.klingai.com/v1/videos/text2video', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
+      model_name: 'kling-v2-6',
       prompt: buildPrompt(script),
+      negative_prompt: '',
       duration: '5',
       aspect_ratio: '9:16',
       mode: 'std',
-      version: '1.6',
+      sound: 'off',
+      callback_url: webhookUrl,
     }),
   })
 
