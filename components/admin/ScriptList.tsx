@@ -52,6 +52,7 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
   const [editForm, setEditForm] = useState<EditForm | null>(null)
   const [loading, setLoading] = useState<string | null>(null)
   const [generatingImage, setGeneratingImage] = useState<string | null>(null)
+  const [postingFb, setPostingFb] = useState<string | null>(null)
 
   const scripts = filter === 'all' ? initial : initial.filter(s => s.status === filter)
 
@@ -112,6 +113,18 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
     setGeneratingImage(null)
   }
 
+  async function handlePostFacebook(id: string) {
+    if (!confirm('Đăng bài lên Facebook Page?')) return
+    setPostingFb(id)
+    const res = await fetch(`/api/scripts/${id}/post-facebook`, { method: 'POST' })
+    const data = await res.json()
+    if (!res.ok) {
+      alert('Đăng Facebook thất bại: ' + (data.error ?? 'Lỗi không xác định'))
+    } else {
+      alert('Đăng thành công! Post ID: ' + data.postId)
+    }
+    setPostingFb(null)
+  }
 
   async function handleDelete(id: string) {
     if (!confirm('Xóa kịch bản này?')) return
@@ -208,7 +221,7 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                         <div key={i} className="flex gap-3">
                           <span className="text-xs font-bold text-orange-500 shrink-0 w-16 truncate">{scene.character}</span>
                           <div>
-                            <p className="text-sm text-gray-800">"{scene.line}"</p>
+                            <p className="text-sm text-gray-800">&quot;{scene.line}&quot;</p>
                             <p className="text-xs text-gray-400 italic">{scene.action}</p>
                           </div>
                         </div>
@@ -297,6 +310,11 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                     {s.imagePrompt && (
                       <button disabled={generatingImage === s.id} onClick={() => handleGenerateImage(s.id)} className="bg-orange-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-orange-600 disabled:opacity-50">
                         {generatingImage === s.id ? 'Đang tạo ảnh...' : s.generatedImageUrl ? 'Tạo lại ảnh' : 'Tạo ảnh'}
+                      </button>
+                    )}
+                    {s.longCaption && (
+                      <button disabled={postingFb === s.id} onClick={() => handlePostFacebook(s.id)} className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                        {postingFb === s.id ? 'Đang đăng...' : 'Đăng Facebook'}
                       </button>
                     )}
                     <button disabled={loading === s.id} onClick={() => handleDelete(s.id)} className="ml-auto text-red-500 text-xs px-3 py-1.5 rounded-lg hover:bg-red-50 disabled:opacity-50">Xóa</button>
