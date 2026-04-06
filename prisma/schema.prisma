@@ -22,6 +22,14 @@ model Product {
   scripts      Script[]
 }
 
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  keywords  String
+  createdAt DateTime @default(now())
+}
+
 model Script {
   id          String   @id @default(cuid())
   productId   String

@@ -21,6 +21,7 @@ export default async function AdminPage() {
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             <Link href="/admin/scripts" className="text-gray-600 hover:text-gray-800 text-sm font-medium hidden sm:block">Kịch bản</Link>
+            <Link href="/admin/categories" className="text-gray-600 hover:text-gray-800 text-sm font-medium hidden sm:block">Danh mục</Link>
             <Link href="/admin/products/new" className="bg-orange-500 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-orange-600 text-sm font-medium whitespace-nowrap">+ Thêm</Link>
             <LogoutButton />
           </div>
@@ -28,6 +29,7 @@ export default async function AdminPage() {
         {/* Mobile nav */}
         <div className="sm:hidden border-t px-4 py-2 flex gap-4">
           <Link href="/admin/scripts" className="text-sm text-gray-600 font-medium">Kịch bản</Link>
+          <Link href="/admin/categories" className="text-sm text-gray-600 font-medium">Danh mục</Link>
         </div>
       </header>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
