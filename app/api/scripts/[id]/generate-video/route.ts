@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createHmac } from 'crypto'
 import { prisma } from '@/lib/prisma'
 import { isValidSession } from '@/lib/auth'
 
@@ -9,11 +10,9 @@ type Scene = { character: string; line: string; action: string }
 function buildPrompt(script: { setting: string; characters: unknown; scenes: unknown; cta: string }): string {
   const characters = script.characters as string[]
   const scenes = script.scenes as Scene[]
-
   const dialogue = scenes
     .map(s => `${s.character} (${s.action}): "${s.line}"`)
     .join('\n')
-
   return `Short drama video, 9:16 vertical format, cinematic style.
 
 Setting: ${script.setting}
@@ -25,6 +24,23 @@ ${dialogue}
 End with: ${script.cta}
 
 Style: realistic, natural lighting, Vietnamese lifestyle, TikTok drama style.`
+}
+
+function base64url(input: string | Buffer): string {
+  const buf = typeof input === 'string' ? Buffer.from(input) : input
+  return buf.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+}
+
+function getKlingToken(): string {
+  const apiKey = process.env.KLING_ACCESS_KEY!
+  const secretKey = process.env.KLING_SECRET_KEY!
+  const now = Math.floor(Date.now() / 1000)
+  const header = base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+  const payload = base64url(JSON.stringify({ iss: apiKey, iat: now, exp: now + 1800 }))
+  const signature = base64url(
+    createHmac('sha256', secretKey).update(`${header}.${payload}`).digest()
+  )
+  return `${header}.${payload}.${signature}`
 }
 
 export async function POST(
@@ -46,34 +62,33 @@ export async function POST(
 
   await prisma.script.update({ where: { id }, data: { videoStatus: 'pending' } })
 
-  const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/fal?scriptId=${id}`
+  const token = getKlingToken()
 
-  const res = await fetch('https://api.piapi.ai/api/v1/task', {
+  const res = await fetch('https://api.klingai.com/v1/videos/text2video', {
     method: 'POST',
     headers: {
-      'x-api-key': process.env.PIAPI_KEY!,
+      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'kling',
-      task_type: 'video_generation',
-      input: {
-        prompt: buildPrompt(script),
-        duration: 10,
-        aspect_ratio: '9:16',
-        mode: 'std',
-        version: '1.6',
-      },
-      webhook_config: {
-        endpoint: webhookUrl,
-      },
+      prompt: buildPrompt(script),
+      duration: '5',
+      aspect_ratio: '9:16',
+      mode: 'std',
+      version: '1.6',
     }),
   })
 
   if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
     await prisma.script.update({ where: { id }, data: { videoStatus: 'failed' } })
-    return NextResponse.json({ error: 'Failed to submit video job' }, { status: 500 })
+    return NextResponse.json({ error: err?.message ?? 'Failed to submit video job' }, { status: 500 })
   }
 
-  return NextResponse.json({ status: 'pending' })
+  const data = await res.json()
+  const taskId = data?.data?.task_id ?? data?.task_id ?? null
+
+  await prisma.script.update({ where: { id }, data: { taskId } })
+
+  return NextResponse.json({ status: 'pending', taskId })
 }
