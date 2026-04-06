@@ -113,6 +113,14 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
     setGeneratingImage(null)
   }
 
+  async function handleGenerateVideo(id: string) {
+    const res = await fetch(`/api/scripts/${id}/generate-video`, { method: 'POST' })
+    const data = await res.json()
+    if (!res.ok) alert('Tạo video thất bại: ' + (data.error ?? 'Lỗi không xác định'))
+    else alert('Đã gửi yêu cầu tạo video! Sẽ nhận kết quả qua webhook.')
+    router.refresh()
+  }
+
   async function handlePostFacebook(id: string) {
     if (!confirm('Đăng bài lên Facebook Page?')) return
     setPostingFb(id)
@@ -296,6 +304,13 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                       <a href={s.generatedImageUrl} download className="inline-block mt-1 text-xs text-blue-500 hover:underline">Tải xuống</a>
                     </div>
                   )}
+                  {s.videoUrl && (
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Video</p>
+                      <video src={s.videoUrl} controls className="w-full max-w-[280px] rounded-lg border" />
+                      <a href={s.videoUrl} target="_blank" rel="noopener noreferrer" className="inline-block mt-1 text-xs text-blue-500 hover:underline">Mở video</a>
+                    </div>
+                  )}
                   <div className="flex flex-wrap gap-2 pt-1">
                     {s.status !== 'approved' && (
                       <button disabled={loading === s.id} onClick={() => updateStatus(s.id, 'approved')} className="bg-green-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-green-600 disabled:opacity-50">Duyệt</button>
@@ -310,6 +325,11 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                     {s.imagePrompt && (
                       <button disabled={generatingImage === s.id} onClick={() => handleGenerateImage(s.id)} className="bg-orange-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-orange-600 disabled:opacity-50">
                         {generatingImage === s.id ? 'Đang tạo ảnh...' : s.generatedImageUrl ? 'Tạo lại ảnh' : 'Tạo ảnh'}
+                      </button>
+                    )}
+                    {s.status === 'approved' && (
+                      <button disabled={s.videoStatus === 'pending'} onClick={() => handleGenerateVideo(s.id)} className="bg-purple-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-purple-600 disabled:opacity-50">
+                        {s.videoStatus === 'pending' ? 'Đang tạo video...' : s.videoUrl ? 'Tạo lại video' : 'Tạo video'}
                       </button>
                     )}
                     {s.longCaption && (
