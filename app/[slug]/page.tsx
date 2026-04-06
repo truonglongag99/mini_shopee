@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { ProductGrid } from '@/components/ProductGrid'
 
@@ -29,13 +28,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-orange-500 text-white px-4 py-3 sticky top-0 z-10 shadow">
-        <div className="max-w-5xl mx-auto flex items-center gap-3">
-          <Link href="/" className="text-white/80 hover:text-white text-sm">← Ada Shop</Link>
+        <div className="max-w-5xl mx-auto">
           <h1 className="text-xl font-bold tracking-tight">🛍️ {category.name}</h1>
         </div>
       </header>
       <main className="max-w-5xl mx-auto px-4 py-6">
-        <ProductGrid products={serialized} />
+        <ProductGrid products={serialized} backToHome />
       </main>
     </div>
   )

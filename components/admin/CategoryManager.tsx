@@ -9,6 +9,9 @@ export function CategoryManager({ categories: initial }: { categories: Category[
   const [form, setForm] = useState({ name: '', slug: '', keywords: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [editing, setEditing] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState<{ name: string; slug: string; keywords: string } | null>(null)
+  const [saving, setSaving] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -21,6 +24,23 @@ export function CategoryManager({ categories: initial }: { categories: Category[
     if (res.ok) { setForm({ name: '', slug: '', keywords: '' }); router.refresh() }
     else { const d = await res.json().catch(() => ({})); setError(d.error ?? 'Có lỗi xảy ra') }
     setLoading(false)
+  }
+
+  function startEdit(c: Category) {
+    setEditing(c.id)
+    setEditForm({ name: c.name, slug: c.slug, keywords: c.keywords })
+  }
+
+  async function saveEdit(id: string) {
+    if (!editForm) return
+    setSaving(true)
+    const res = await fetch(`/api/categories/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(editForm),
+    })
+    if (res.ok) { setEditing(null); setEditForm(null); router.refresh() }
+    setSaving(false)
   }
 
   async function handleDelete(id: string, name: string) {
@@ -63,13 +83,44 @@ export function CategoryManager({ categories: initial }: { categories: Category[
           <div className="bg-white rounded-lg shadow p-8 text-center text-gray-400 text-sm">Chưa có trang danh mục nào.</div>
         )}
         {initial.map(c => (
-          <div key={c.id} className="bg-white rounded-lg shadow px-4 py-3 flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-gray-800">{c.name}</p>
-              <p className="text-xs text-orange-500">/{c.slug}</p>
-              <p className="text-xs text-gray-400 mt-0.5">Keywords: {c.keywords}</p>
-            </div>
-            <button onClick={() => handleDelete(c.id, c.name)} className="text-xs text-red-500 hover:text-red-700 shrink-0">Xóa</button>
+          <div key={c.id} className="bg-white rounded-lg shadow overflow-hidden">
+            {editing === c.id && editForm ? (
+              <div className="px-4 py-3 space-y-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Tên hiển thị</label>
+                  <input value={editForm.name} onChange={e => setEditForm(p => p && ({ ...p, name: e.target.value }))} className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-orange-400" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Slug</label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-400 shrink-0">/</span>
+                    <input value={editForm.slug} onChange={e => setEditForm(p => p && ({ ...p, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') }))} className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-orange-400" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Keywords</label>
+                  <input value={editForm.keywords} onChange={e => setEditForm(p => p && ({ ...p, keywords: e.target.value }))} className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-orange-400" />
+                </div>
+                <div className="flex gap-2">
+                  <button disabled={saving} onClick={() => saveEdit(c.id)} className="bg-orange-500 text-white text-xs px-4 py-1.5 rounded-lg hover:bg-orange-600 disabled:opacity-50">
+                    {saving ? 'Đang lưu...' : 'Lưu'}
+                  </button>
+                  <button onClick={() => { setEditing(null); setEditForm(null) }} className="bg-gray-200 text-gray-700 text-xs px-4 py-1.5 rounded-lg hover:bg-gray-300">Hủy</button>
+                </div>
+              </div>
+            ) : (
+              <div className="px-4 py-3 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-gray-800">{c.name}</p>
+                  <p className="text-xs text-orange-500">/{c.slug}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">Keywords: {c.keywords}</p>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <button onClick={() => startEdit(c)} className="text-xs text-blue-500 hover:text-blue-700">Sửa</button>
+                  <button onClick={() => handleDelete(c.id, c.name)} className="text-xs text-red-500 hover:text-red-700">Xóa</button>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
