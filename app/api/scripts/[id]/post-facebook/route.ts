@@ -24,12 +24,15 @@ export async function POST(
   })
   if (!script) return NextResponse.json({ error: 'Script not found' }, { status: 404 })
 
+  const affiliateUrl = script.product.affiliateUrl ?? ''
+  const hashtags = script.hashtags && (script.hashtags as string[]).length > 0
+    ? '\n' + (script.hashtags as string[]).join(' ')
+    : ''
+
   const message = [
     script.longCaption ?? script.shortCaption ?? '',
-    script.hashtags && (script.hashtags as string[]).length > 0
-      ? '\n' + (script.hashtags as string[]).join(' ')
-      : '',
-    script.product.affiliateUrl ? '\n\n' + script.product.affiliateUrl : '',
+    hashtags,
+    affiliateUrl ? '\n\n🛒 Mua ngay: ' + affiliateUrl : '',
   ].join('').trim()
 
   let result: { id?: string; error?: { message: string } }
@@ -50,7 +53,7 @@ export async function POST(
     )
     result = await res.json()
   } else {
-    // Post as text only
+    // Post as text + link preview
     const res = await fetch(
       `https://graph.facebook.com/v19.0/${PAGE_ID}/feed`,
       {
@@ -58,6 +61,7 @@ export async function POST(
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message,
+          link: affiliateUrl || undefined,
           access_token: PAGE_TOKEN,
         }),
       }
