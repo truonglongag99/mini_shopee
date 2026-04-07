@@ -48,20 +48,31 @@ export async function POST(request: NextRequest) {
 
   const { shopId, itemId } = parsed
 
-  const res = await fetch(
+  const apiRes = await fetch(
     `https://shopee.vn/api/v4/item/get?itemid=${itemId}&shopid=${shopId}`,
     {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Referer': 'https://shopee.vn/',
-        'Accept': 'application/json',
+        'Referer': `https://shopee.vn/`,
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'vi,en;q=0.9',
+        'x-api-source': 'pc',
+        'x-requested-with': 'XMLHttpRequest',
+        'af-ac-enc-dat': '0',
       },
     }
   )
 
-  if (!res.ok) return NextResponse.json({ error: 'Không lấy được thông tin sản phẩm' }, { status: 500 })
+  if (!apiRes.ok) {
+    const errText = await apiRes.text().catch(() => '')
+    return NextResponse.json({ error: `Shopee API lỗi ${apiRes.status}: ${errText.slice(0, 200)}` }, { status: 500 })
+  }
 
-  const data = await res.json()
+  const data = await apiRes.json()
+  if (data?.error || !data?.data) {
+    return NextResponse.json({ error: `Shopee trả lỗi: ${JSON.stringify(data?.error ?? data).slice(0, 200)}` }, { status: 500 })
+  }
+
   const item = data?.data?.item
 
   if (!item) return NextResponse.json({ error: 'Không tìm thấy sản phẩm' }, { status: 404 })
