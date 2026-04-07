@@ -36,7 +36,7 @@ function getKlingToken(): string {
   const secretKey = process.env.KLING_SECRET_KEY!
   const now = Math.floor(Date.now() / 1000)
   const header = base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
-  const payload = base64url(JSON.stringify({ iss: apiKey, iat: now, exp: now + 1800 }))
+  const payload = base64url(JSON.stringify({ iss: apiKey, iat: now, nbf: now - 5, exp: now + 1800 }))
   const signature = base64url(
     createHmac('sha256', secretKey).update(`${header}.${payload}`).digest()
   )
