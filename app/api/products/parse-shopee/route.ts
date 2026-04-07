@@ -48,34 +48,35 @@ export async function POST(request: NextRequest) {
 
   const { shopId, itemId } = parsed
 
-  const apiRes = await fetch(
-    `https://shopee.vn/api/v4/item/get?itemid=${itemId}&shopid=${shopId}`,
+  // Fetch the product page HTML and parse embedded JSON
+  const pageRes = await fetch(
+    `https://shopee.vn/product/${shopId}/${itemId}`,
     {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Referer': `https://shopee.vn/`,
-        'Accept': 'application/json, text/plain, */*',
-        'Accept-Language': 'vi,en;q=0.9',
-        'x-api-source': 'pc',
-        'x-requested-with': 'XMLHttpRequest',
-        'af-ac-enc-dat': '0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'vi-VN,vi;q=0.9',
       },
     }
   )
 
-  if (!apiRes.ok) {
-    const errText = await apiRes.text().catch(() => '')
-    return NextResponse.json({ error: `Shopee API lỗi ${apiRes.status}: ${errText.slice(0, 200)}` }, { status: 500 })
-  }
+  if (!pageRes.ok)
+    return NextResponse.json({ error: `Không tải được trang Shopee (${pageRes.status})` }, { status: 500 })
 
-  const data = await apiRes.json()
-  if (data?.error || !data?.data) {
-    return NextResponse.json({ error: `Shopee trả lỗi: ${JSON.stringify(data?.error ?? data).slice(0, 200)}` }, { status: 500 })
-  }
+  const html = await pageRes.text()
 
-  const item = data?.data?.item
+  // Parse __NEXT_DATA__ embedded JSON
+  const nextDataMatch = html.match(/<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/)
+  if (!nextDataMatch)
+    return NextResponse.json({ error: 'Không tìm thấy dữ liệu sản phẩm trong trang' }, { status: 404 })
 
-  if (!item) return NextResponse.json({ error: 'Không tìm thấy sản phẩm' }, { status: 404 })
+  const nextData = JSON.parse(nextDataMatch[1])
+  const item = nextData?.props?.pageProps?.initialData?.data?.item
+    ?? nextData?.props?.pageProps?.productInfo
+    ?? nextData?.props?.pageProps?.data?.item
+
+  if (!item)
+    return NextResponse.json({ error: 'Không parse được thông tin sản phẩm', keys: Object.keys(nextData?.props?.pageProps ?? {}) }, { status: 404 })
 
   const name = item.name ?? ''
   const price = item.price ? item.price / 100000 : item.price_min ? item.price_min / 100000 : 0
