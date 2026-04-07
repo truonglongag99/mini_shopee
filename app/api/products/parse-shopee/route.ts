@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
   }
 
   const parsed = parseShopeeUrl(url)
-  if (!parsed) return NextResponse.json({ error: 'Không parse được URL Shopee' }, { status: 400 })
+  if (!parsed) return NextResponse.json({ error: 'Không parse được URL Shopee', resolvedUrl: url }, { status: 400 })
 
   const { shopId, itemId } = parsed
 

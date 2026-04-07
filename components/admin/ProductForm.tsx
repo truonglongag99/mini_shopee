@@ -33,7 +33,7 @@ export function ProductForm({ initialData, productId }: { initialData?: FormData
     })
     const data = await res.json()
     if (!res.ok) {
-      setParseError(data.error ?? 'Không parse được URL')
+      setParseError((data.error ?? 'Không parse được URL') + (data.resolvedUrl ? ` (${data.resolvedUrl})` : ''))
     } else {
       setForm(p => ({
         ...p,
