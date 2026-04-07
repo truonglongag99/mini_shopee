@@ -18,35 +18,6 @@ export function ProductForm({ initialData, productId }: { initialData?: FormData
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [generatingDesc, setGeneratingDesc] = useState(false)
-  const [shopeeUrl, setShopeeUrl] = useState('')
-  const [parsing, setParsing] = useState(false)
-  const [parseError, setParseError] = useState('')
-
-  async function handleParseShopee() {
-    if (!shopeeUrl) return
-    setParsing(true)
-    setParseError('')
-    const res = await fetch('/api/products/parse-shopee', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: shopeeUrl }),
-    })
-    const data = await res.json()
-    if (!res.ok) {
-      setParseError((data.error ?? 'Không parse được URL') + (data.resolvedUrl ? ` (${data.resolvedUrl})` : ''))
-    } else {
-      setForm(p => ({
-        ...p,
-        name: data.name || p.name,
-        imageUrl: data.imageUrl || p.imageUrl,
-        price: data.price ? String(Math.round(data.price)) : p.price,
-        category: data.category || p.category,
-        affiliateUrl: shopeeUrl, // giữ nguyên link affiliate gốc
-      }))
-    }
-    setParsing(false)
-  }
-
   async function handleGenerateDescription() {
     if (!form.description) return
     setGeneratingDesc(true)
@@ -76,29 +47,6 @@ export function ProductForm({ initialData, productId }: { initialData?: FormData
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5 w-full">
-      {/* Shopee URL auto-parse */}
-      <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 space-y-2">
-        <p className="text-xs font-semibold text-orange-700 uppercase">Tự động điền từ link Shopee</p>
-        <div className="flex gap-2">
-          <input
-            type="url"
-            value={shopeeUrl}
-            onChange={e => setShopeeUrl(e.target.value)}
-            placeholder="Paste link affiliate Shopee (s.shopee.vn/...) vào đây"
-            className="flex-1 px-3 py-2 border border-orange-300 rounded-lg text-sm focus:outline-none focus:border-orange-400 bg-white"
-          />
-          <button
-            type="button"
-            onClick={handleParseShopee}
-            disabled={parsing || !shopeeUrl}
-            className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 disabled:opacity-50 text-sm font-medium whitespace-nowrap"
-          >
-            {parsing ? 'Đang lấy...' : 'Lấy thông tin'}
-          </button>
-        </div>
-        {parseError && <p className="text-xs text-red-500">{parseError}</p>}
-      </div>
-
       {FIELDS.map(f => (
         <div key={f.name}>
           <label htmlFor={f.name} className="block text-sm font-medium text-gray-700 mb-1">{f.label}</label>
