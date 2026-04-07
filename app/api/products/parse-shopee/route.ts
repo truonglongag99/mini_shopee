@@ -4,9 +4,15 @@ import { isValidSession } from '@/lib/auth'
 export const dynamic = 'force-dynamic'
 
 function parseShopeeUrl(url: string): { shopId: string; itemId: string } | null {
-  const match = url.match(/i\.(\d+)\.(\d+)/)
-  if (!match) return null
-  return { shopId: match[1], itemId: match[2] }
+  // Pattern 1: shopee.vn/...-i.{shopId}.{itemId}
+  const match1 = url.match(/i\.(\d+)\.(\d+)/)
+  if (match1) return { shopId: match1[1], itemId: match1[2] }
+
+  // Pattern 2: shopee.vn/{username}/{shopId}/{itemId}
+  const match2 = url.match(/shopee\.vn\/[^/]+\/(\d+)\/(\d+)/)
+  if (match2) return { shopId: match2[1], itemId: match2[2] }
+
+  return null
 }
 
 async function resolveShortUrl(url: string): Promise<string> {
