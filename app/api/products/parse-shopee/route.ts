@@ -65,24 +65,24 @@ export async function POST(request: NextRequest) {
 
   const html = await pageRes.text()
 
-  // Parse __NEXT_DATA__ embedded JSON
-  const nextDataMatch = html.match(/<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/)
-  if (!nextDataMatch)
-    return NextResponse.json({ error: 'Không tìm thấy dữ liệu sản phẩm trong trang' }, { status: 404 })
+  function getMeta(property: string): string {
+    const m = html.match(new RegExp(`<meta[^>]+(?:property|name)=["']${property}["'][^>]+content=["']([^"']+)["']`, 'i'))
+      ?? html.match(new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["']${property}["']`, 'i'))
+    return m ? m[1] : ''
+  }
 
-  const nextData = JSON.parse(nextDataMatch[1])
-  const item = nextData?.props?.pageProps?.initialData?.data?.item
-    ?? nextData?.props?.pageProps?.productInfo
-    ?? nextData?.props?.pageProps?.data?.item
+  const name = getMeta('og:title') || getMeta('twitter:title')
+  const imageUrl = getMeta('og:image') || getMeta('twitter:image')
 
-  if (!item)
-    return NextResponse.json({ error: 'Không parse được thông tin sản phẩm', keys: Object.keys(nextData?.props?.pageProps ?? {}) }, { status: 404 })
+  // og:description thường có giá kiểu "₫120.000 - Mua..."
+  const desc = getMeta('og:description') || ''
+  const priceMatch = desc.match(/[₫đ]\s?([\d.,]+)/)
+  const price = priceMatch
+    ? parseFloat(priceMatch[1].replace(/\./g, '').replace(',', '.'))
+    : 0
 
-  const name = item.name ?? ''
-  const price = item.price ? item.price / 100000 : item.price_min ? item.price_min / 100000 : 0
-  const imageId = item.image ?? item.images?.[0]
-  const imageUrl = imageId ? `https://down-vn.img.susercontent.com/file/${imageId}` : ''
-  const category = item.categories?.[item.categories.length - 1]?.display_name ?? ''
+  if (!name)
+    return NextResponse.json({ error: 'Shopee không trả về thông tin sản phẩm (có thể cần đăng nhập)' }, { status: 404 })
 
-  return NextResponse.json({ name, price, imageUrl, category })
+  return NextResponse.json({ name, price, imageUrl, category: '' })
 }
