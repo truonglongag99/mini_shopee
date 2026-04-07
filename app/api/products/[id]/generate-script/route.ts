@@ -25,14 +25,18 @@ export async function POST(
 // STEP 1: INJECT RANDOMNESS TỪ CODE — không để model tự chọn
 // ============================================================
 
-const contentTypes = [
-  "Kể chuyện trải nghiệm cá nhân",
-  "Hỏi ý kiến gây tranh luận",
-  "Tình huống hài hước / fail",
-  "Review bất ngờ (twist)",
-  "So sánh trước - sau",
-  "Góc nhìn gây tranh cãi nhẹ",
-];
+// Chọn content type theo ngày trong tuần (0=CN, 1=T2, ..., 6=T7)
+const contentTypeByDay: Record<number, string> = {
+  1: "Tự ti → cải thiện: nhân vật từng mặc cảm / ngại ngùng, sản phẩm giúp lấy lại tự tin",
+  2: "Lần đầu thử bất ngờ: hoài nghi lúc đầu, dùng xong bất ngờ vì kết quả ngoài mong đợi",
+  3: "So sánh trước – sau: kể rõ trạng thái trước khi dùng và sự thay đổi cụ thể sau khi dùng",
+  4: "Người khác nhận xét: ai đó xung quanh để ý / khen / hỏi mua, nhân vật kể lại",
+  5: "Story nhẹ: kể chuyện đời thường có sản phẩm xuất hiện tự nhiên, không đẩy bán",
+  6: "Flex nhẹ: mặc lên / dùng lên tự tin hơn, được chú ý hơn — tone nhẹ nhàng không khoe mẽ",
+  0: "Re-up: kể lại câu chuyện ấn tượng nhất với sản phẩm, góc nhìn nhìn lại sau thời gian dùng",
+}
+const dayOfWeek = new Date().getDay()
+const selectedType = contentTypeByDay[dayOfWeek]
 
 const contextScenarios = [
   "đang cuộn feed lúc 11 giờ đêm",
@@ -60,7 +64,6 @@ const cameraAngles = [
   "candid shot kiểu chụp lén tự nhiên ngoài đường",
 ];
 
-const selectedType     = contentTypes[Math.floor(Math.random() * contentTypes.length)];
 const selectedContext  = contextScenarios[Math.floor(Math.random() * contextScenarios.length)];
 const selectedMood     = characterMoods[Math.floor(Math.random() * characterMoods.length)];
 const selectedAngle    = cameraAngles[Math.floor(Math.random() * cameraAngles.length)];
