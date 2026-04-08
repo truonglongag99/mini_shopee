@@ -44,6 +44,81 @@ const FILTERS = [
   { value: 'rejected', label: 'Từ chối' },
 ]
 
+function ImagePromptSection({ scriptId, imagePrompt, onRefresh }: { scriptId: string; imagePrompt: string; onRefresh: () => void }) {
+  const [editing, setEditing] = useState(false)
+  const [value, setValue] = useState(imagePrompt)
+  const [saving, setSaving] = useState(false)
+  const [generating, setGenerating] = useState<number | null>(null)
+
+  let prompts: string[]
+  try { prompts = JSON.parse(imagePrompt) } catch { prompts = [imagePrompt] }
+
+  async function savePrompt() {
+    setSaving(true)
+    await fetch(`/api/scripts/${scriptId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imagePrompt: value }),
+    })
+    setSaving(false)
+    setEditing(false)
+    onRefresh()
+  }
+
+  async function generateFromPrompt(prompt: string, index: number) {
+    setGenerating(index)
+    await fetch(`/api/scripts/${scriptId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imagePrompt: prompt }),
+    })
+    await fetch(`/api/scripts/${scriptId}/generate-image`, { method: 'POST' })
+    await fetch(`/api/scripts/${scriptId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imagePrompt }),
+    })
+    setGenerating(null)
+    onRefresh()
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold text-gray-500 uppercase">
+          Image Prompt{prompts.length > 1 ? ` (${prompts.length} kiểu)` : ''}
+        </p>
+        <button onClick={() => { setEditing(!editing); setValue(imagePrompt) }} className="text-xs text-blue-500 hover:underline">
+          {editing ? 'Hủy' : 'Sửa'}
+        </button>
+      </div>
+      {editing ? (
+        <div className="space-y-2">
+          <textarea value={value} onChange={e => setValue(e.target.value)} rows={6} className="w-full px-3 py-2 border rounded-lg text-xs focus:outline-none focus:border-orange-400 resize-none" />
+          <button disabled={saving} onClick={savePrompt} className="bg-orange-500 text-white text-xs px-4 py-1.5 rounded-lg hover:bg-orange-600 disabled:opacity-50">
+            {saving ? 'Đang lưu...' : 'Lưu'}
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {prompts.map((p, i) => (
+            <div key={i} className="bg-white border rounded-lg px-3 py-2 space-y-1">
+              {prompts.length > 1 && <p className="text-xs font-medium text-orange-500">Kiểu {i + 1}</p>}
+              <p className="text-xs text-gray-500 italic">{p}</p>
+              <div className="flex gap-3 pt-1">
+                <button onClick={() => navigator.clipboard.writeText(p)} className="text-xs text-blue-500 hover:underline">Copy</button>
+                <button disabled={generating === i} onClick={() => generateFromPrompt(p, i)} className="text-xs text-orange-500 hover:underline disabled:opacity-50">
+                  {generating === i ? 'Đang tạo...' : 'Tạo ảnh'}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
   const router = useRouter()
   const [filter, setFilter] = useState('all')
@@ -51,7 +126,6 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
   const [editing, setEditing] = useState<string | null>(null)
   const [editForm, setEditForm] = useState<EditForm | null>(null)
   const [loading, setLoading] = useState<string | null>(null)
-  const [generatingImage, setGeneratingImage] = useState<string | null>(null)
   const [postingFb, setPostingFb] = useState<string | null>(null)
 
   const scripts = filter === 'all' ? initial : initial.filter(s => s.status === filter)
@@ -103,14 +177,6 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
     setEditForm(null)
     router.refresh()
     setLoading(null)
-  }
-
-  async function handleGenerateImage(id: string) {
-    setGeneratingImage(id)
-    const res = await fetch(`/api/scripts/${id}/generate-image`, { method: 'POST' })
-    if (!res.ok) alert('Tạo ảnh thất bại. Thử lại!')
-    router.refresh()
-    setGeneratingImage(null)
   }
 
   async function handleGenerateVideo(id: string) {
@@ -248,13 +314,7 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                     <p className="text-xs text-blue-500 bg-white border rounded-lg px-3 py-2 truncate">{s.product.affiliateUrl}</p>
                   </div>
                   {s.imagePrompt && (
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs font-semibold text-gray-500 uppercase">Image Prompt</p>
-                        <button onClick={() => navigator.clipboard.writeText(s.imagePrompt!)} className="text-xs text-blue-500 hover:underline">Copy</button>
-                      </div>
-                      <p className="text-xs text-gray-500 bg-white border rounded-lg px-3 py-2 italic">{s.imagePrompt}</p>
-                    </div>
+                    <ImagePromptSection scriptId={s.id} imagePrompt={s.imagePrompt} onRefresh={() => router.refresh()} />
                   )}
                   {(s.tiktokHook || s.shortCaption || s.longCaption) && (
                     <div className="space-y-3">
@@ -322,11 +382,6 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                       <button disabled={loading === s.id} onClick={() => updateStatus(s.id, 'draft')} className="bg-yellow-100 text-yellow-700 text-xs px-3 py-1.5 rounded-lg hover:bg-yellow-200 disabled:opacity-50">Draft lại</button>
                     )}
                     <button onClick={() => startEdit(s)} className="bg-blue-50 text-blue-600 text-xs px-3 py-1.5 rounded-lg hover:bg-blue-100">Chỉnh sửa</button>
-                    {s.imagePrompt && (
-                      <button disabled={generatingImage === s.id} onClick={() => handleGenerateImage(s.id)} className="bg-orange-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-orange-600 disabled:opacity-50">
-                        {generatingImage === s.id ? 'Đang tạo ảnh...' : s.generatedImageUrl ? 'Tạo lại ảnh' : 'Tạo ảnh'}
-                      </button>
-                    )}
                     {s.status === 'approved' && (
                       <button disabled={s.videoStatus === 'pending'} onClick={() => handleGenerateVideo(s.id)} className="bg-purple-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-purple-600 disabled:opacity-50">
                         {s.videoStatus === 'pending' ? 'Đang tạo video...' : s.videoUrl ? 'Tạo lại video' : 'Tạo video'}
