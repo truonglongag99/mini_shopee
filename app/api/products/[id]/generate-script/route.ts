@@ -75,20 +75,20 @@ const hasCTA           = Math.random() > 0.4; // 60% có CTA, 40% không
 const sceneContext = (() => {
   const cat = product.category.toLowerCase()
   if (/đồ ngủ|pyjama|ngủ|loungewear/.test(cat))
-    return 'cozy bedroom or living room at home, soft morning light or warm evening lamp'
+    return 'simple rustic bedroom of a Mekong Delta Vietnamese rural home, wooden furniture, mosquito net, warm ambient light'
   if (/đồ lót|lingerie|bikini/.test(cat))
-    return 'elegant bedroom with soft warm lighting, intimate and tasteful setting'
+    return 'simple rustic bedroom of a Mekong Delta Vietnamese rural home, wooden furniture, soft warm lamp light, intimate and tasteful'
   if (/thời trang|áo|quần|váy|đầm/.test(cat))
-    return 'lifestyle setting — café, street, or modern interior with natural daylight'
+    return 'rural Mekong Delta Vietnam countryside, lush tropical greenery, banana trees, coconut palms, natural warm sunlight'
   if (/mỹ phẩm|skincare|makeup|son|kem/.test(cat))
     return 'bright vanity table or bathroom counter with natural window light'
   if (/thú cưng|pet|chó|mèo|vẹt/.test(cat))
-    return 'cozy home interior, living room or garden, with pet in frame'
+    return 'cozy rural Mekong Delta home garden, tropical plants, warm natural light, pet in frame'
   if (/gia đình|trẻ em|mẹ bầu/.test(cat))
-    return 'warm home environment, kitchen or living room, family-friendly atmosphere'
+    return 'warm Mekong Delta rural home kitchen or living room, wooden house, family-friendly atmosphere'
   if (/thể thao|gym|yoga|fitness/.test(cat))
-    return 'gym, yoga studio, or outdoor park with bright natural light'
-  return 'clean modern home interior or outdoor lifestyle setting with natural light'
+    return 'outdoor riverside or countryside road in Mekong Delta Vietnam, lush greenery, natural morning light'
+  return 'rural Mekong Delta Vietnam setting, tropical greenery, natural warm light'
 })()
 
 // ============================================================
@@ -195,8 +195,8 @@ OUTPUT FORMAT — JSON THUẦN, KHÔNG THÊM BẤT CỨ TEXT NÀO BÊN NGOÀI:
   ${isFemaleClothing ? `"imagePrompts": [
     "Photorealistic vertical photo. Setting: ${sceneContext}. Beautiful Vietnamese woman, 160cm, 55kg, long straight black hair, fair smooth porcelain skin, proportional hourglass figure, wearing the product, standing facing camera, confident natural smile. Natural daylight. Candid lifestyle. No text, no logo.",
     "Photorealistic vertical photo. Setting: ${sceneContext}. Beautiful Vietnamese woman, 160cm, 55kg, long straight black hair, fair smooth porcelain skin, proportional hourglass figure, wearing the product, turning sideways showing full silhouette, soft relaxed expression. Warm indoor light. Candid style. No text, no logo.",
-    "Photorealistic vertical photo. Setting: outdoor café or street. Beautiful Vietnamese woman, 160cm, 55kg, long straight black hair, fair smooth porcelain skin, proportional hourglass figure, wearing the product, candid walking shot from slight angle. Natural bright light. No text, no logo.",
-    "Photorealistic vertical photo. Setting: mirror selfie in bedroom. Beautiful Vietnamese woman, 160cm, 55kg, long straight black hair, fair smooth porcelain skin, proportional hourglass figure, wearing the product, taking mirror selfie, playful natural expression. Warm lamp light. No text, no logo.",
+    "Photorealistic vertical photo. Setting: rural Mekong Delta Vietnam countryside road, lush tropical greenery, banana trees, coconut palms, rice fields in background, natural warm sunlight. Beautiful Vietnamese woman, 160cm, 55kg, long straight black hair, fair smooth porcelain skin, proportional hourglass figure, wearing the product, candid walking shot from slight angle. No text, no logo.",
+    "Photorealistic vertical photo. Setting: simple rustic bedroom of a Mekong Delta Vietnamese rural home, wooden furniture, mosquito net, simple decor, warm ambient light. Beautiful Vietnamese woman, 160cm, 55kg, long straight black hair, fair smooth porcelain skin, proportional hourglass figure, wearing the product, taking mirror selfie, playful natural expression. No text, no logo.",
     "Photorealistic vertical photo. Setting: ${sceneContext}. Close-up from waist up. Beautiful Vietnamese woman, 160cm, 55kg, long straight black hair, fair smooth porcelain skin, wearing the product, looking slightly down, natural relaxed pose. Soft diffused light. No text, no logo."
   ]` : `"imagePrompt": "Photorealistic vertical social media photo. ${selectedAngle}. Setting: ${sceneContext}. Scene: [mô tả cảnh cụ thể liên quan sản phẩm]. Characters: beautiful Vietnamese woman, 160cm, 55kg, long straight black hair, fair smooth porcelain skin, proportional hourglass figure, naturally attractive posture, [mô tả trang phục phù hợp sản phẩm]. Lighting: natural/warm/soft. Style: candid lifestyle, not staged. Colors: vibrant but natural. No text, no watermark, no logo."`},
   "tiktokHook": "Câu hook đầu tiên cho video TikTok — tối đa 1 câu, đủ mạnh để giữ người xem không vuốt qua",
