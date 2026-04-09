@@ -100,6 +100,10 @@ const isFemaleCategory = femaleCategories.some(c =>
   product.category.toLowerCase().includes(c)
 );
 const isFemaleClothing = /thời trang nữ|quần áo nữ|váy|đầm|áo nữ|đồ nữ|đồ lót|bra|bikini/i.test(product.category);
+const isIntimateClohing = /đồ ngủ|pyjama|ngủ|loungewear|đồ lót|bra|lingerie|bikini/i.test(product.category);
+const outdoorScene4 = isIntimateClohing
+  ? 'simple rustic bedroom of a Mekong Delta Vietnamese rural home, wooden furniture, mosquito net, warm lamp light'
+  : 'rural Mekong Delta Vietnam countryside alley or home porch, tropical plants, coconut trees, warm golden hour light';
 const pronounSet = isFemaleCategory
   ? `"tui" - "mấy bà" - "chị em"`
   : `"tui" - "mấy ông" - "mọi người"`;
@@ -196,7 +200,7 @@ OUTPUT FORMAT — JSON THUẦN, KHÔNG THÊM BẤT CỨ TEXT NÀO BÊN NGOÀI:
     "Photorealistic vertical photo. Setting: ${sceneContext}. Beautiful Vietnamese countryside woman, 160cm, 55kg, long straight black hair, fair smooth skin, round soft face with natural rural charm, no heavy makeup, gentle warm expression, proportional hourglass figure, wearing the product, standing facing camera, confident natural smile. Natural daylight. Candid lifestyle. No text, no logo.",
     "Photorealistic vertical photo. Setting: ${sceneContext}. Beautiful Vietnamese countryside woman, 160cm, 55kg, long straight black hair, fair smooth skin, round soft face with natural rural charm, no heavy makeup, gentle warm expression, proportional hourglass figure, wearing the product, turning sideways showing full silhouette, soft relaxed expression. Warm indoor light. Candid style. No text, no logo.",
     "Photorealistic vertical photo. Setting: rural Mekong Delta Vietnam countryside road, lush tropical greenery, banana trees, coconut palms, rice fields in background, natural warm sunlight. Beautiful Vietnamese countryside woman, 160cm, 55kg, long straight black hair, fair smooth skin, round soft face with natural rural charm, no heavy makeup, gentle warm expression, proportional hourglass figure, wearing the product, candid walking shot from slight angle. No text, no logo.",
-    "Photorealistic vertical photo. Setting: simple rustic bedroom of a Mekong Delta Vietnamese rural home, wooden furniture, mosquito net, simple decor, warm ambient light. Beautiful Vietnamese countryside woman, 160cm, 55kg, long straight black hair, fair smooth skin, round soft face with natural rural charm, no heavy makeup, gentle warm expression, proportional hourglass figure, wearing the product, taking mirror selfie, playful natural expression. No text, no logo.",
+    "Photorealistic vertical photo. Setting: ${outdoorScene4}. Beautiful Vietnamese countryside woman, 160cm, 55kg, long straight black hair, fair smooth skin, round soft face with natural rural charm, no heavy makeup, gentle warm expression, proportional hourglass figure, wearing the product, relaxed candid pose, natural authentic expression. No text, no logo.",
     "Photorealistic vertical photo. Setting: ${sceneContext}. Close-up from waist up. Beautiful Vietnamese woman, 160cm, 55kg, long straight black hair, fair smooth porcelain skin, wearing the product, looking slightly down, natural relaxed pose. Soft diffused light. No text, no logo."
   ]` : `"imagePrompt": "Photorealistic vertical social media photo. ${selectedAngle}. Setting: ${sceneContext}. Scene: [mô tả cảnh cụ thể liên quan sản phẩm]. Characters: beautiful Vietnamese woman, 160cm, 55kg, long straight black hair, fair smooth porcelain skin, proportional hourglass figure, naturally attractive posture, [mô tả trang phục phù hợp sản phẩm]. Lighting: natural/warm/soft. Style: candid lifestyle, not staged. Colors: vibrant but natural. No text, no watermark, no logo."`},
   "tiktokHook": "Câu hook đầu tiên cho video TikTok — tối đa 1 câu, đủ mạnh để giữ người xem không vuốt qua",
