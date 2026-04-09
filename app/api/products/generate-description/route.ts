@@ -16,17 +16,21 @@ export async function POST(request: NextRequest) {
   if (!rawContent)
     return NextResponse.json({ error: 'Missing rawContent' }, { status: 400 })
 
-  const prompt = `Bạn là chuyên gia viết nội dung affiliate marketing đa nền tảng (TikTok, Instagram, Facebook, Threads).
+  const prompt = `Bạn là chuyên gia viết nội dung sản phẩm cho affiliate marketing.
 
-Thông tin:
+Thông tin đầu vào:
 - Tên sản phẩm: ${name ?? 'Chưa có'}
 - Danh mục: ${category ?? 'Chưa có'}
-- Nội dung thô: ${rawContent}
+- Nội dung thô (giữ nguyên các thông tin quan trọng): ${rawContent}
 
-Viết mô tả sản phẩm ngắn gọn (tối đa 150 từ), plain text, không markdown, gồm:
-- Công dụng chính + đối tượng phù hợp (1-2 câu)
-- 1 fact bất ngờ/ít ai biết về sản phẩm (1 câu)
-- Nhân vật kể chuyện phù hợp nhất + góc hài hước có thể khai thác (1-2 câu)`
+Viết mô tả sản phẩm (tối đa 150 từ), plain text, không markdown, theo thứ tự:
+
+1. ĐẶC ĐIỂM SẢN PHẨM (bắt buộc giữ nguyên, không bịa): màu sắc, chất liệu, kiểu dáng, kích thước, thương hiệu, tính năng nổi bật — những gì có trong nội dung thô thì giữ nguyên để AI tạo ảnh đúng sản phẩm
+2. Công dụng chính + đối tượng phù hợp (1-2 câu)
+3. 1 fact thú vị hoặc lợi ích ít ai để ý (1 câu)
+4. Góc khai thác content hài hước/cảm xúc phù hợp (1 câu)
+
+QUAN TRỌNG: Phần đặc điểm sản phẩm phải chính xác với thực tế — không thêm màu sắc, chất liệu, hay tính năng không có trong nội dung thô.`
 
   let description = ''
   try {
