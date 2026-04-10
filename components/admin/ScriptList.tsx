@@ -306,6 +306,26 @@ export function ScriptList({ scripts: initial }: { scripts: Script[] }) {
                     <p className="text-xs font-semibold text-gray-500 uppercase mb-1">CTA</p>
                     <p className="text-sm text-orange-600 font-medium">{s.cta}</p>
                   </div>
+                  {/* VIDEO PROMPT — copy sang Kling/Runway/Pika */}
+                  {(() => {
+                    const videoPrompt = [
+                      `Setting: ${s.setting}`,
+                      '',
+                      ...s.scenes.map((sc, i) =>
+                        `[Cảnh ${i + 1}] ${sc.character}: "${sc.line}" — ${sc.action}`
+                      ),
+                      ...(s.cta ? ['', `[Kết] ${s.cta}`] : []),
+                    ].join('\n')
+                    return (
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs font-semibold text-gray-500 uppercase">Video Prompt</p>
+                          <button onClick={() => navigator.clipboard.writeText(videoPrompt)} className="text-xs text-blue-500 hover:underline">Copy</button>
+                        </div>
+                        <pre className="text-xs text-gray-700 whitespace-pre-wrap bg-white border rounded-lg px-3 py-2 font-sans">{videoPrompt}</pre>
+                      </div>
+                    )
+                  })()}
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <p className="text-xs font-semibold text-gray-500 uppercase">Affiliate URL</p>
