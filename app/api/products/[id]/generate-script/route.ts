@@ -35,16 +35,67 @@ const contentTypeByDay: Record<number, string> = {
   6: "Flex nhẹ: mặc lên / dùng lên tự tin hơn, được chú ý hơn — tone nhẹ nhàng không khoe mẽ",
   0: "Re-up: kể lại câu chuyện ấn tượng nhất với sản phẩm, góc nhìn nhìn lại sau thời gian dùng",
 }
-const dayOfWeek = new Date().getDay()
+const now = new Date()
+const dayOfWeek = now.getDay()
+const month = now.getMonth() + 1 // 1-12
+const weekOfYear = Math.ceil((now.getDate() + new Date(now.getFullYear(), now.getMonth(), 1).getDay()) / 7)
 const selectedType = contentTypeByDay[dayOfWeek]
 
+// ============================================================
+// SEASONAL CONTEXT — tâm lý xã hội theo tháng
+// ============================================================
+const seasonalContextByMonth: Record<number, { season: string; mood: string; angle: string }> = {
+  1:  { season: 'sau Tết', mood: 'mệt mỏi sau dịp lễ, chi tiêu nhiều rồi bắt đầu tiết kiệm', angle: 'sản phẩm giúp tiết kiệm hoặc bù đắp sau kỳ nghỉ' },
+  2:  { season: 'đầu năm mới', mood: 'hứng khởi bắt đầu lại, muốn thay đổi bản thân', angle: 'sản phẩm gắn với mục tiêu năm mới, fresh start' },
+  3:  { season: 'cuối mùa lạnh - nắng dần lên', mood: 'phấn chấn vì thời tiết đẹp, bắt đầu ra ngoài nhiều', angle: 'chuẩn bị cho mùa hè, mặc đẹp hơn' },
+  4:  { season: 'nắng bắt đầu gắt', mood: 'lo lắng về da, về nắng, về việc mặc gì cho mát', angle: 'chống nắng, mát mẻ, chăm sóc da mùa hè' },
+  5:  { season: 'nắng đỉnh điểm', mood: 'nóng bức, dễ cáu, cần giải nhiệt và thoải mái', angle: 'sản phẩm giúp dễ chịu hơn trong tiết trời nóng' },
+  6:  { season: 'mùa hè - nghỉ hè bắt đầu', mood: 'vui vẻ, muốn du lịch, muốn mặc đẹp đi chơi', angle: 'outfit đi biển, du lịch, hẹn hò mùa hè' },
+  7:  { season: 'mùa mưa bắt đầu', mood: 'lười biếng, thích ở nhà, hay nhớ vẩn vơ', angle: 'sản phẩm dùng ở nhà, comfort, self-care ngày mưa' },
+  8:  { season: 'mùa mưa - cuối hè', mood: 'hơi chán, muốn thay đổi gì đó, chuẩn bị vào năm học', angle: 'thay đổi thói quen, refresh bản thân, back to routine' },
+  9:  { season: 'đầu thu - se lạnh', mood: 'mơ mộng, lãng mạn nhẹ, thích cà phê và quần áo mới', angle: 'outfit mùa thu, cozy vibes, lớp áo mới' },
+  10: { season: 'thu - trời mát dần', mood: 'năng suất cao hơn, muốn chăm sóc bản thân nhiều hơn', angle: 'skincare mùa chuyển giao, thời trang thu' },
+  11: { season: 'gần cuối năm', mood: 'nhìn lại năm qua, mua sắm chuẩn bị Tết sớm, sale mùa', angle: 'sản phẩm tổng kết năm, chuẩn bị diện Tết' },
+  12: { season: 'cuối năm - cận Tết', mood: 'háo hức, mua sắm nhiều, muốn cho bản thân thứ gì đó', angle: 'quà tặng, diện Tết, làm mới bản thân trước năm mới' },
+}
+const seasonal = seasonalContextByMonth[month]
+
+// ============================================================
+// TRENDING CAPTION FORMAT — rotate theo tuần trong năm
+// ============================================================
+const trendingFormats = [
+  { name: 'confess nhẹ', instruction: 'Mở bằng 1 câu tự thú nhỏ, kiểu "Tui phải thừa nhận là..." hoặc "Không ngờ tui lại..." — giọng nhẹ tự cười bản thân' },
+  { name: 'POV relatable', instruction: 'Mở bằng "POV:" hoặc mô tả cảnh từ ngôi thứ 2 "Khi bạn đang..." — đặt người đọc vào đúng tình huống' },
+  { name: 'plot twist', instruction: 'Mở bằng tình huống bình thường rồi dòng 2-3 lật ngược hoàn toàn — kiểu "Tưởng là... ai ngờ..."' },
+  { name: 'so sánh ngầm', instruction: 'Không so sánh trực tiếp mà kể 2 trạng thái: trước và sau — để người đọc tự rút ra kết luận' },
+  { name: 'nói thật khó nghe', instruction: 'Mở bằng 1 câu thẳng thắn hơi bất ngờ, kiểu "Thật ra là..." hoặc "Ít ai biết nhưng..." — giọng người đã trải nghiệm' },
+  { name: 'kể chuyện bạn bè', instruction: 'Viết như đang nhắn tin kể chuyện cho bạn thân — câu ngắn, tự nhiên, có thể dùng "bạn ơi", "ủa mà"' },
+  { name: 'micro-story', instruction: 'Kể 1 câu chuyện nhỏ có đầu có cuối trong 5-6 dòng — nhân vật rõ ràng, có vấn đề, có giải pháp, có cảm xúc' },
+  { name: 'câu hỏi bỏ ngỏ', instruction: 'Kết thúc bằng 1 câu hỏi thật sự muốn nghe ý kiến người đọc — không phải hỏi tu từ, hỏi như muốn biết thật' },
+]
+const selectedFormat = trendingFormats[weekOfYear % trendingFormats.length]
+
 const contextScenarios = [
-  "đang cuộn feed lúc 11 giờ đêm",
-  "vừa nhận hàng xong",
-  "đang nằm ườn cuối tuần",
-  "vừa đi làm về mệt",
-  "đang ngồi café một mình",
-  "đang dọn tủ đồ",
+  "đang cuộn feed lúc 11 giờ đêm không ngủ được",
+  "vừa nhận hàng xong ngồi mở ra xem",
+  "đang nằm ườn cuối tuần chẳng biết làm gì",
+  "vừa đi làm về mệt ngồi thở",
+  "đang ngồi café một mình nhìn ra cửa sổ",
+  "đang chờ cơm chín ngồi lướt điện thoại",
+  "vừa tắm xong ngồi dưỡng da",
+  "đang ngồi trên xe buýt về nhà",
+  "đang đợi bạn trễ hẹn ngoài quán",
+  "vừa ăn tối xong nằm dài ra ghế",
+  "đang ngồi làm việc giữa giờ tranh thủ lướt mạng",
+  "sáng sớm chưa ngủ dậy hẳn còn nằm trên giường",
+  "đang ngồi với mẹ xem tivi buổi tối",
+  "vừa đi siêu thị về đang cất đồ",
+  "đang ngồi ngoài ban công nhìn mưa",
+  "vừa xem xong một video và tay tự lướt tiếp",
+  "đang thử quần áo trước gương",
+  "ngồi uống trà chiều một mình ở nhà",
+  "đang nhắn tin cho bạn về chuyện mua sắm",
+  "vừa xong buổi gym ngồi nghỉ",
 ];
 
 const characterMoods = [
@@ -143,6 +194,13 @@ NGUYÊN TẮC NỘI DUNG:
 ====================
 
 ====================
+BỐI CẢNH THỜI ĐIỂM (tháng ${month} — ${seasonal.season}):
+- Tâm lý người dùng lúc này: ${seasonal.mood}
+- Góc khai thác phù hợp: ${seasonal.angle}
+- Tất cả nội dung (kịch bản, caption) NÊN phản ánh đúng tâm lý này — đừng viết content mùa đông trong mùa hè
+====================
+
+====================
 ĐIỀU CHỈNH THEO DANH MỤC (${product.category}):
 ${
   /thời trang|đồ lót|nữ|bikini/i.test(product.category)
@@ -204,8 +262,8 @@ OUTPUT FORMAT — JSON THUẦN, KHÔNG THÊM BẤT CỨ TEXT NÀO BÊN NGOÀI:
     "Viết 1 image prompt tiếng Anh. Nhân vật: beautiful Vietnamese countryside woman, 158cm, 54kg, slim soft body with gentle curves, long straight black hair, fair smooth skin, round soft face with natural rural charm (not V-line jaw), no makeup, gentle warm expression, balanced feminine figure. Cô đang mặc SẢN PHẨM NÀY (mô tả chính xác màu sắc, kiểu dáng, chất liệu của sản phẩm '${product.name}' dựa trên: ${product.description ?? product.name}). Pose: close-up từ thắt lưng trở lên, nhìn xuống nhẹ, dáng điệu tự nhiên. Setting: ${sceneContext}. Ánh sáng khuếch tán mềm. Photorealistic vertical photo. No text, no logo."
   ]` : `"imagePrompt": "Viết 1 image prompt tiếng Anh mô tả cảnh sản phẩm '${product.name}' được sử dụng trong bối cảnh tự nhiên. Setting: ${sceneContext}. ${selectedAngle}. Nếu có nhân vật thì dùng: beautiful Vietnamese countryside woman, 158cm, 62kg, slightly chubby soft body, long straight black hair, fair smooth skin, round chubby face, no makeup, gentle expression. Mô tả sản phẩm chính xác dựa trên: ${product.description ?? product.name}. Lighting: natural/warm/soft. Candid lifestyle. No text, no watermark, no logo."`},
   "tiktokHook": "Câu hook đầu tiên cho video TikTok — tối đa 1 câu, đủ mạnh để giữ người xem không vuốt qua",
-  "shortCaption": "Caption TikTok/Threads theo cấu trúc:\nDÒNG 1 — Hook: 1 câu nêu vấn đề/nỗi đau mà sản phẩm giải quyết, viết như đang nói chuyện với bạn bè\nDÒNG 2 — Lợi ích cụ thể: nêu rõ 1 lợi ích thật sự của sản phẩm khiến cuộc sống dễ hơn / tốt hơn — KHÔNG dùng từ chung chung như 'tốt', 'hiệu quả'\nDÒNG 3 — Lý do phải dùng: 1 câu giải thích tại sao không dùng thì thiệt thòi, kiểu nhẹ nhàng gây tiếc nuối\nQUY TẮC: xưng hô ${pronounSet}, ngắn gọn, có thể có 1-2 emoji, KHÔNG kêu gọi mua hàng",
-  "longCaption": "Caption Facebook theo đúng cấu trúc sau:\n\nDÒNG 1 — Hook dừng tay: 1 câu kể tình huống cụ thể gây tò mò hoặc nhận dạng được ngay, KHÔNG dùng câu hỏi tu từ kiểu 'Bạn có biết...'\n\nDÒNG 2-3 — Kể chuyện ngắn: tình huống thật xảy ra với nhân vật, dẫn đến việc dùng sản phẩm một cách tự nhiên — KHÔNG giới thiệu sản phẩm trực tiếp\n\nDÒNG 4-5 — Fact/thông tin hữu ích: 1-2 điều thật sự hữu ích về sản phẩm mà người dùng không biết (thành phần, cách dùng đúng, lưu ý, so sánh với cách làm thông thường) — viết như người dùng tự nghiên cứu được\n\nDÒNG 6 — Câu tranh cãi nhẹ: 1 câu nhận xét thẳng thắn hơi gây ý kiến trái chiều, kiểu nói thật mà người ta không dám nói (ví dụ: 'Thật ra mấy sản phẩm đắt tiền hơn cũng chỉ vậy thôi' hoặc 'Tui không hiểu sao người ta cứ chịu khổ mà không thử cái này')\n\nDÒNG 7-8 — Kết tự nhiên: câu kết bằng cảm xúc hoặc bỏ ngỏ, KHÔNG kêu gọi mua hàng trực tiếp\n\nQUY TẮC BẮT BUỘC:\n- Xưng hô: ${pronounSet}\n- Câu ngắn, có thể ngắt dòng giữa chừng cho tự nhiên\n- KHÔNG dùng: 'thật sự', 'quá trời', 'siêu', 'tuyệt vời', 'hiệu quả ngay'\n- KHÔNG lộ là quảng cáo\n- Tổng 7-9 dòng",
+  "shortCaption": "Caption TikTok/Threads — áp dụng format '${selectedFormat.name}': ${selectedFormat.instruction}\nCấu trúc 3 dòng:\nDÒNG 1 — Hook theo format trên, liên quan đến tâm lý tháng ${month} (${seasonal.mood})\nDÒNG 2 — Lợi ích cụ thể: 1 lợi ích thật sự khiến cuộc sống dễ hơn — KHÔNG dùng từ chung chung như 'tốt', 'hiệu quả'\nDÒNG 3 — Câu gây tiếc nuối nhẹ nếu không dùng\nQUY TẮC: xưng hô ${pronounSet}, ngắn gọn, có thể có 1-2 emoji, KHÔNG kêu gọi mua hàng",
+  "longCaption": "Caption Facebook — áp dụng format '${selectedFormat.name}': ${selectedFormat.instruction}\n\nDÒNG 1 — Hook dừng tay: PHẢI bắt đầu từ đúng tình huống này: '${selectedContext}' — áp dụng format trên để viết thành 1 câu tự nhiên, phù hợp tâm lý tháng ${month} (${seasonal.mood}), KHÔNG dùng câu hỏi tu từ\n\nDÒNG 2-3 — Kể chuyện ngắn: tình huống thật, dẫn đến sản phẩm tự nhiên — KHÔNG giới thiệu sản phẩm trực tiếp\n\nDÒNG 4-5 — Fact hữu ích: 1-2 điều người dùng không biết về sản phẩm, viết như người tự tìm hiểu được\n\nDÒNG 6 — Câu nói thật nhẹ gây tranh cãi: nhận xét thẳng thắn mà ít người dám nói\n\nDÒNG 7-8 — Kết tự nhiên: cảm xúc hoặc bỏ ngỏ, KHÔNG kêu gọi mua\n\nQUY TẮC BẮT BUỘC:\n- Xưng hô: ${pronounSet}\n- Câu ngắn, có thể ngắt dòng giữa chừng\n- KHÔNG dùng: 'thật sự', 'quá trời', 'siêu', 'tuyệt vời', 'hiệu quả ngay'\n- KHÔNG lộ là quảng cáo\n- Tổng 7-9 dòng",
   "hashtags": ["#tag1", "#tag2", "#tag3", "#tag4", "#tag5", "#tag6", "#tag7"]
 }
 ====================
