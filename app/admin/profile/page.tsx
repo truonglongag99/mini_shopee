@@ -102,7 +102,7 @@ export default function MyProfilePage() {
         <main className="flex-1 p-6 md:p-16 space-y-12 overflow-y-auto max-h-screen bg-white/30">
           
           <section className="section-animate opacity-0 translate-y-8 transition-all duration-700">
-            <h2 className="text-base font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
+            <h2 className="text-xl font-bold text-blue-600 mb-4 uppercase tracking-wider flex items-center gap-4">
               Giới thiệu <div className="h-[1px] flex-1 bg-slate-200"></div>
             </h2>
             <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group">
@@ -113,7 +113,7 @@ export default function MyProfilePage() {
           </section>
 
           <section className="section-animate opacity-0 translate-y-8 transition-all duration-700 delay-100">
-            <h2 className="text-base font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
+            <h2 className="text-xl font-bold text-blue-600 mb-4 uppercase tracking-wider flex items-center gap-4">
               Kinh nghiệm chi tiết <div className="h-[1px] flex-1 bg-slate-200"></div>
             </h2>
             <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
