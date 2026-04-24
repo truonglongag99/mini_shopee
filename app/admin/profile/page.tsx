@@ -74,8 +74,8 @@ export default function MyProfilePage() {
                 alt="Avatar"
               />
             </div>
-            <h1 className="text-2xl font-extrabold mb-1 tracking-tight text-slate-900">TRƯƠNG ĐỨC LONG</h1>
-            <p className="text-blue-600 font-semibold mb-8 tracking-[0.15em] uppercase text-[10px]">IT Support / System Specialist</p>
+            <h1 className="text-3xl font-extrabold mb-1 tracking-tight text-slate-900">TRƯƠNG ĐỨC LONG</h1>
+            <p className="text-blue-600 font-semibold mb-8 tracking-wider uppercase text-xs">IT Support / System Specialist</p>
 
             <div className="text-sm text-slate-600 space-y-3 mb-8 text-left bg-slate-50 p-5 rounded-2xl border border-slate-100 shadow-inner">
               <p className="flex items-center gap-3">
@@ -139,11 +139,11 @@ export default function MyProfilePage() {
             <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 mt-6">
               <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2">
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 tracking-tight">Web Developer – 3F (đối tác của Fastboy Marketing)</h3>
+                  <h3 className="text-base font-bold text-slate-900 tracking-tight">Web Developer – 3F (đối tác của Fastboy Marketing)</h3>
                 </div>
-                <span className="text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-1 rounded uppercase tracking-wider">Web Development</span>
+                <span className="text-xs font-bold bg-blue-50 text-blue-700 px-2 py-1 rounded uppercase tracking-wider">Web Development</span>
               </div>
-              <ul className="grid grid-cols-1 gap-y-3">
+              <ul className="grid grid-cols-1 gap-y-3 mt-4">
                 {THREE_F_EXP.map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-600 text-sm">
                     <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
@@ -155,13 +155,13 @@ export default function MyProfilePage() {
           </section>
 
           <section className="section-animate opacity-0 translate-y-8 transition-all duration-700 delay-200">
-            <h2 className="text-base font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
+            <h2 className="text-xl font-bold text-blue-600 mb-4 uppercase tracking-wider flex items-center gap-4">
               Kỹ năng chuyên môn <div className="h-[1px] flex-1 bg-slate-200"></div>
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {SKILLS.map((skill, idx) => (
                 <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:border-blue-400 hover:shadow-blue-100/50 transition-all duration-300">
-                  <h3 className="text-blue-600 font-bold text-sm mb-2">{skill.title}</h3>
+                  <h3 className="text-blue-600 font-bold text-base mb-2">{skill.title}</h3>
                   <p className="text-slate-500 text-sm">{skill.list}</p>
                 </div>
               ))}
@@ -169,13 +169,13 @@ export default function MyProfilePage() {
           </section>
 
           <section className="section-animate opacity-0 translate-y-8 transition-all duration-700 delay-300">
-            <h2 className="text-base font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
+            <h2 className="text-xl font-bold text-blue-600 mb-4 uppercase tracking-wider flex items-center gap-4">
               Kinh nghiệm làm việc <div className="h-[1px] flex-1 bg-slate-200"></div>
             </h2>
             <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
               <ul className="space-y-4">
                 {GENERAL_EXP.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-slate-600">
+                  <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
                     <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
                     <span>{item}</span>
                   </li>
