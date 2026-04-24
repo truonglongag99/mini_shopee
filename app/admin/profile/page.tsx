@@ -80,7 +80,7 @@ export default function MyProfilePage() {
               <p className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shadow-sm">✉</span>
                 <a href="mailto:truongduclong@gmail.com" className="hover:text-blue-600 transition-colors font-medium decoration-blue-200 hover:underline underline-offset-4">
-                  truongduclong@gmail.com
+                  truongduclongag@gmail.com
                 </a>
               </p>
               <p className="flex items-center gap-3">
