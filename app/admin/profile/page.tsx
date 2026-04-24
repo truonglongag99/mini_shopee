@@ -21,6 +21,13 @@ const GEARMENT_EXP = [
   'Triển khai và quản lý hệ thống trên server'
 ];
 
+const THREE_F_EXP = [
+  'Phát triển và maintain website cho các tiệm nail (US market)',
+  'Tùy chỉnh giao diện theo yêu cầu khách hàng',
+  'Xử lý lỗi website và đảm bảo hoạt động ổn định',
+  'Làm việc với database và hệ thống quản lý nội dung'
+];
+
 const GENERAL_EXP = [
   'Phát triển hệ thống web',
   'Tối ưu hóa Database với hàng triệu bản ghi',
@@ -120,6 +127,24 @@ export default function MyProfilePage() {
               </div>
               <ul className="grid grid-cols-1 gap-y-3">
                 {GEARMENT_EXP.map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-slate-600 text-sm">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* 3F Experience */}
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 mt-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 tracking-tight">Web Developer – 3F (đối tác của Fastboy Marketing)</h3>
+                </div>
+                <span className="text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-1 rounded uppercase tracking-wider">Web Development</span>
+              </div>
+              <ul className="grid grid-cols-1 gap-y-3">
+                {THREE_F_EXP.map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-600 text-sm">
                     <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
                     <span>{item}</span>
