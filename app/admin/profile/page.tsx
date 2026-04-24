@@ -73,8 +73,8 @@ export default function MyProfilePage() {
             <div className="text-sm text-slate-600 space-y-3 mb-8 text-left bg-slate-50 p-5 rounded-2xl border border-slate-100 shadow-inner">
               <p className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shadow-sm">📞</span>
-                <a href="tel:037767281" className="hover:text-blue-600 transition-colors font-semibold decoration-blue-200 decoration-2 underline-offset-4 hover:underline">
-                  0377 672 81
+                <a href="tel:0377767281" className="hover:text-blue-600 transition-colors font-semibold decoration-blue-200 decoration-2 underline-offset-4 hover:underline">
+                  0377 767 281
                 </a>
               </p>
               <p className="flex items-center gap-3">
@@ -85,7 +85,7 @@ export default function MyProfilePage() {
               </p>
               <p className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shadow-sm">📍</span>
-                <span>An Giang, Viet Nam</span>
+                <span>Bình Thạnh Đông, An Giang, Việt Nam</span>
               </p>
             </div>
           </div>
