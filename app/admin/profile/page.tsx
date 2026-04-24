@@ -89,14 +89,6 @@ export default function MyProfilePage() {
               </p>
             </div>
           </div>
-
-          <Link 
-            href="/admin" 
-            className="mt-4 px-6 py-3 bg-slate-900 text-white hover:bg-slate-800 rounded-xl text-sm font-medium transition-all duration-300 shadow-md flex items-center justify-center gap-2"
-          >
-            <span>←</span>
-            Dashboard
-          </Link>
         </aside>
 
         {/* RIGHT CONTENT */}
