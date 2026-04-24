@@ -3,6 +3,31 @@
 import Link from 'next/link'
 import { useEffect } from 'react'
 
+// Tách dữ liệu ra ngoài để code gọn gàng và dễ quản lý
+const SKILLS = [
+  { title: 'Hạ tầng mạng', list: 'LAN, WiFi, DNS, DHCP' },
+  { title: 'Phát triển Web', list: 'Next.js, PHP, MySQL' },
+  { title: 'Hệ thống', list: 'Linux, Docker, Vercel' },
+  { title: 'Công cụ', list: 'Redis, RabbitMQ, Git' }
+];
+
+const GEARMENT_EXP = [
+  'Vận hành và duy trì hệ thống web hoạt động ổn định',
+  'Xử lý sự cố hệ thống, đảm bảo uptime và hiệu năng',
+  'Phối hợp xử lý lỗi phát sinh trong quá trình vận hành',
+  'Xây dựng và duy trì API phục vụ hệ thống',
+  'Quản lý và tối ưu database lớn (hàng trăm triệu record)',
+  'Sử dụng Redis để xử lý queue và background jobs',
+  'Triển khai và quản lý hệ thống trên server'
+];
+
+const GENERAL_EXP = [
+  'Phát triển hệ thống web PHP quy mô lớn',
+  'Tối ưu hóa Database với hàng triệu bản ghi',
+  'Triển khai và vận hành hệ thống Server Cloud/On-premise',
+  'Xây dựng quy trình CI/CD cho dự án'
+];
+
 export default function MyProfilePage() {
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -10,6 +35,8 @@ export default function MyProfilePage() {
         if (entry.isIntersecting) {
           entry.target.classList.add('opacity-100', 'translate-y-0')
           entry.target.classList.remove('opacity-0', 'translate-y-8')
+          // Sau khi đã hiện ra thì không cần quan sát nữa để tiết kiệm tài nguyên
+          observer.unobserve(entry.target)
         }
       })
     }, { threshold: 0.1 })
@@ -43,14 +70,18 @@ export default function MyProfilePage() {
             <h1 className="text-2xl font-extrabold mb-1 tracking-tight text-slate-900">TRƯƠNG ĐỨC LONG</h1>
             <p className="text-blue-600 font-semibold mb-8 tracking-[0.15em] uppercase text-[10px]">IT Support / System Specialist</p>
 
-            <div className="text-sm text-slate-600 space-y-4 mb-8 text-left bg-slate-50 p-5 rounded-2xl border border-slate-100">
+            <div className="text-sm text-slate-600 space-y-3 mb-8 text-left bg-slate-50 p-5 rounded-2xl border border-slate-100 shadow-inner">
               <p className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shadow-sm">📞</span>
-                <span>037767281</span>
+                <a href="tel:037767281" className="hover:text-blue-600 transition-colors font-semibold decoration-blue-200 decoration-2 underline-offset-4 hover:underline">
+                  0377 672 81
+                </a>
               </p>
               <p className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shadow-sm">✉</span>
-                <span>truongduclong@gmail.com</span>
+                <a href="mailto:truongduclong@gmail.com" className="hover:text-blue-600 transition-colors font-medium decoration-blue-200 hover:underline underline-offset-4">
+                  truongduclong@gmail.com
+                </a>
               </p>
               <p className="flex items-center gap-3">
                 <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shadow-sm">📍</span>
@@ -75,47 +106,59 @@ export default function MyProfilePage() {
             <h2 className="text-xs font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
               Giới thiệu <div className="h-[1px] flex-1 bg-slate-200"></div>
             </h2>
-            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group">
+            <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group">
               <p className="text-slate-800 font-medium leading-relaxed">
-                Kỹ sư CNTT có kinh nghiệm phát triển web và vận hành hệ thống. 
-              </p>
-              <p className="mt-2 text-slate-500 group-hover:text-slate-700 transition-colors leading-relaxed">
-                Có khả năng xử lý sự cố mạng, quản lý server và hỗ trợ người dùng với hiệu suất tối ưu, luôn sẵn sàng học hỏi công nghệ mới.
+                Kỹ sư CNTT với hơn 3 năm kinh nghiệm trong việc phát triển Backend và vận hành hệ thống quy mô lớn. Chuyên sâu về tối ưu hóa Database và xây dựng kiến trúc API bền vững.
               </p>
             </div>
           </section>
 
           <section className="section-animate opacity-0 translate-y-8 transition-all duration-700 delay-100">
             <h2 className="text-xs font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
+              Kinh nghiệm chi tiết <div className="h-[1px] flex-1 bg-slate-200"></div>
+            </h2>
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-2">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 tracking-tight">Backend Developer – Gearment</h3>
+                  <a href="https://gearment.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 text-sm hover:underline inline-flex items-center gap-1">
+                    https://gearment.com/ <span className="text-[10px]">↗</span>
+                  </a>
+                </div>
+                <span className="text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-1 rounded uppercase tracking-wider">Hệ thống & API</span>
+              </div>
+              <ul className="grid grid-cols-1 gap-y-3">
+                {GEARMENT_EXP.map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-slate-600 text-sm">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+
+          <section className="section-animate opacity-0 translate-y-8 transition-all duration-700 delay-200">
+            <h2 className="text-xs font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
               Kỹ năng chuyên môn <div className="h-[1px] flex-1 bg-slate-200"></div>
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                { title: 'Hạ tầng mạng', list: 'LAN, WiFi, DNS, DHCP' },
-                { title: 'Phát triển Web', list: 'Next.js, PHP, MySQL' },
-                { title: 'Hệ thống', list: 'Linux, Docker, Vercel' },
-                { title: 'Công cụ', list: 'Redis, RabbitMQ, Git' }
-              ].map((skill, idx) => (
-                <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:border-blue-200 hover:shadow-md transition-all duration-300">
-                  <h3 className="text-slate-900 font-bold text-sm mb-2">{skill.title}</h3>
+              {SKILLS.map((skill, idx) => (
+                <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:border-blue-400 hover:shadow-blue-100/50 transition-all duration-300">
+                  <h3 className="text-blue-600 font-bold text-sm mb-2">{skill.title}</h3>
                   <p className="text-slate-500 text-sm">{skill.list}</p>
                 </div>
               ))}
             </div>
           </section>
 
-          <section className="section-animate opacity-0 translate-y-8 transition-all duration-700 delay-200">
+          <section className="section-animate opacity-0 translate-y-8 transition-all duration-700 delay-300">
             <h2 className="text-xs font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
               Kinh nghiệm làm việc <div className="h-[1px] flex-1 bg-slate-200"></div>
             </h2>
             <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
               <ul className="space-y-4">
-                {[
-                  'Phát triển hệ thống web PHP quy mô lớn',
-                  'Tối ưu hóa Database với hàng triệu bản ghi',
-                  'Triển khai và vận hành hệ thống Server Cloud/On-premise',
-                  'Xây dựng quy trình CI/CD cho dự án'
-                ].map((item, i) => (
+                {GENERAL_EXP.map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-600">
                     <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
                     <span>{item}</span>
