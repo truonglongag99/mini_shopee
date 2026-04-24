@@ -4,7 +4,8 @@ import { isValidSession } from '@/lib/auth'
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (pathname === '/admin/login') {
+  const publicPaths = ['/admin/login', '/admin/profile']
+  if (publicPaths.includes(pathname)) {
     return NextResponse.next()
   }
 
