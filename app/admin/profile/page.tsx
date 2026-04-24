@@ -74,7 +74,7 @@ export default function MyProfilePage() {
                 alt="Avatar"
               />
             </div>
-            <h1 className="text-3xl font-extrabold mb-1 tracking-tight text-slate-900">TRƯƠNG ĐỨC LONG</h1>
+            <h1 className="text-2xl font-extrabold mb-1 tracking-tight text-slate-900">TRƯƠNG ĐỨC LONG</h1>
             <p className="text-blue-600 font-semibold mb-8 tracking-wider uppercase text-xs">IT Support / System Specialist</p>
 
             <div className="text-sm text-slate-600 space-y-3 mb-8 text-left bg-slate-50 p-5 rounded-2xl border border-slate-100 shadow-inner">
