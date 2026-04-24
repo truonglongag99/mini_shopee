@@ -16,13 +16,13 @@ const GEARMENT_EXP = [
   'Xử lý sự cố hệ thống, đảm bảo uptime và hiệu năng',
   'Phối hợp xử lý lỗi phát sinh trong quá trình vận hành',
   'Xây dựng và duy trì API phục vụ hệ thống',
-  'Quản lý và tối ưu database lớn (hàng trăm triệu record)',
+  'Quản lý và tối ưu database lớn với MySQL',
   'Sử dụng Redis để xử lý queue và background jobs',
   'Triển khai và quản lý hệ thống trên server'
 ];
 
 const GENERAL_EXP = [
-  'Phát triển hệ thống web PHP quy mô lớn',
+  'Phát triển hệ thống web',
   'Tối ưu hóa Database với hàng triệu bản ghi',
   'Triển khai và vận hành hệ thống Server Cloud/On-premise',
   'Xây dựng quy trình CI/CD cho dự án'
@@ -103,18 +103,20 @@ export default function MyProfilePage() {
         <main className="flex-1 p-6 md:p-16 space-y-12 overflow-y-auto max-h-screen bg-white/30">
           
           <section className="section-animate opacity-0 translate-y-8 transition-all duration-700">
-            <h2 className="text-xs font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
+            <h2 className="text-base font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
               Giới thiệu <div className="h-[1px] flex-1 bg-slate-200"></div>
             </h2>
             <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group">
               <p className="text-slate-800 font-medium leading-relaxed">
-                Kỹ sư CNTT với hơn 3 năm kinh nghiệm trong việc phát triển Backend và vận hành hệ thống quy mô lớn. Chuyên sâu về tối ưu hóa Database và xây dựng kiến trúc API bền vững.
+                Kỹ sư CNTT với kinh nghiệm phát triển hệ thống web và vận hành server thực tế.
+                Có khả năng xử lý sự cố mạng, quản lý hệ thống và hỗ trợ người dùng.
+                Đã tham gia xây dựng và vận hành hệ thống e-commerce với lượng dữ liệu lớn.
               </p>
             </div>
           </section>
 
           <section className="section-animate opacity-0 translate-y-8 transition-all duration-700 delay-100">
-            <h2 className="text-xs font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
+            <h2 className="text-base font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
               Kinh nghiệm chi tiết <div className="h-[1px] flex-1 bg-slate-200"></div>
             </h2>
             <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
@@ -125,7 +127,6 @@ export default function MyProfilePage() {
                     https://gearment.com/ <span className="text-[10px]">↗</span>
                   </a>
                 </div>
-                <span className="text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-1 rounded uppercase tracking-wider">Hệ thống & API</span>
               </div>
               <ul className="grid grid-cols-1 gap-y-3">
                 {GEARMENT_EXP.map((item, i) => (
@@ -139,7 +140,7 @@ export default function MyProfilePage() {
           </section>
 
           <section className="section-animate opacity-0 translate-y-8 transition-all duration-700 delay-200">
-            <h2 className="text-xs font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
+            <h2 className="text-base font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
               Kỹ năng chuyên môn <div className="h-[1px] flex-1 bg-slate-200"></div>
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -153,7 +154,7 @@ export default function MyProfilePage() {
           </section>
 
           <section className="section-animate opacity-0 translate-y-8 transition-all duration-700 delay-300">
-            <h2 className="text-xs font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
+            <h2 className="text-base font-bold text-blue-600 mb-4 uppercase tracking-[0.3em] flex items-center gap-4">
               Kinh nghiệm làm việc <div className="h-[1px] flex-1 bg-slate-200"></div>
             </h2>
             <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
