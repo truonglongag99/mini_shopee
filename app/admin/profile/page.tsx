@@ -12,7 +12,7 @@ const SKILLS = [
 ];
 
 const GEARMENT_EXP = [
-  'Vận hành và duy trì hệ thống web hoạt động ổn định',
+  'Vận hành và duy trì hệ thống e-commerce POD hoạt động ổn định',
   'Xử lý sự cố hệ thống, đảm bảo uptime và hiệu năng',
   'Phối hợp xử lý lỗi phát sinh trong quá trình vận hành',
   'Xây dựng và duy trì API phục vụ hệ thống',
@@ -100,9 +100,7 @@ export default function MyProfilePage() {
             </h2>
             <div className="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 group">
               <p className="text-slate-800 font-medium leading-relaxed">
-                Kỹ sư CNTT với kinh nghiệm phát triển hệ thống web và vận hành server thực tế.
-                Có khả năng xử lý sự cố mạng, quản lý hệ thống và hỗ trợ người dùng.
-                Đã tham gia xây dựng và vận hành hệ thống e-commerce với lượng dữ liệu lớn.
+                Kỹ sư CNTT với kinh nghiệm vận hành hệ thống và hỗ trợ người dùng trong môi trường thực tế. Có khả năng xử lý sự cố máy tính, mạng nội bộ (LAN/WiFi) và quản lý server cơ bản. Đồng thời có nền tảng phát triển web (PHP) và từng tham gia xây dựng, vận hành hệ thống e-commerce theo mô hình Print-on-Demand.
               </p>
             </div>
           </section>
