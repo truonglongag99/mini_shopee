@@ -69,7 +69,7 @@ export default function MyProfilePage() {
             <div className="relative inline-block mb-6">
               <div className="absolute inset-0 bg-blue-600 blur-2xl opacity-10 rounded-full"></div>
               <img 
-                src="https://i.pravatar.cc/150?img=3" 
+                src="/images/avatar.png" 
                 className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg relative z-10" 
                 alt="Avatar"
               />
